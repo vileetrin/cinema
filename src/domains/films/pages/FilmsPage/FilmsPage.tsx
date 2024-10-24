@@ -20,7 +20,7 @@ const FilmsPage = observer(() => {
 
   return (
     <div className={css.container}>
-      <h1>Films List</h1>
+      <h1 className={css.title}><span className={css.part}>Films</span> List</h1>
       <ul className={css.list}>
         {vm.films.map((film: IFilmEntity) => {
             const key: number = untracked((): number => film.id);

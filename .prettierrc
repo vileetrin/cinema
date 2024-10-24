@@ -1,17 +1,10 @@
 {
-  "printWidth": 80,
+  "printWidth": 60,
   "useTabs": false,
   "semi": true,
   "singleQuote": true,
   "trailingComma": "es5",
   "bracketSpacing": true,
   "arrowParens": "avoid",
-  "proseWrap": "always",
-  "max-line-length": [
-    true,
-    {
-      "limit": 140,
-      "ignore-pattern": "^import |^export {(.*?)}"
-    }
-  ]
+  "proseWrap": "always"
 }

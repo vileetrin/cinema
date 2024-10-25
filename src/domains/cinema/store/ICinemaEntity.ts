@@ -1,5 +1,4 @@
 export default interface ICinemaEntity {
-    id: number;
-    address: string;
-    hallsId: number[];
+  id: number;
+  address: string;
 }

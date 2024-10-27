@@ -1,14 +1,14 @@
+import { Field } from 'formik';
 import { observer } from 'mobx-react-lite';
+import { CinemaVM } from '../../ViewModels/CinemaVM.ts';
 import { useStore } from '../../../../infrastructure/StoreContext.ts';
 import { useEffect, useMemo } from 'react';
-import { CinemaVM } from '../../ViewModels/CinemaVM.ts';
-import { Field } from 'formik';
 
 interface CinemaPickerProps {
-  handleNext: () => void;
+  setFieldValue: (field: string, value: any) => void;
 }
 
-const CinemaPicker = observer(({ handleNext }: { handleNext: CinemaPickerProps }) => {
+const CinemaPicker = observer(({ setFieldValue }: CinemaPickerProps) => {
   const { cinemaStore } = useStore();
 
   const vm = useMemo(() => {
@@ -20,18 +20,20 @@ const CinemaPicker = observer(({ handleNext }: { handleNext: CinemaPickerProps }
   }, []);
 
   return (
-    <>
-      <h2>Choose cinema:</h2>
+    <div>
+      <h3>Choose cinema:</h3>
       {vm.cinemas.map(cinema => (
-        <label>
-          <Field type="radio" name="cinema" value={cinema.id} />
+        <label key={cinema.id}>
+          <Field
+            type="radio"
+            name="cinema"
+            value={cinema.id.toString()}
+            onClick={() => setFieldValue('cinema', cinema.id)}
+          />
           {cinema.address}
         </label>
       ))}
-      <button type="submit" onClick={handleNext}>
-        Next
-      </button>
-    </>
+    </div>
   );
 });
 

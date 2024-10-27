@@ -2,7 +2,7 @@ import HallsStore from '../store/HallsStore.ts';
 import { HallsServerRepo } from '../../../../infrastructure/repos/HallsServerRepo.ts';
 import IHallEntity from '../store/IHallEntity.ts';
 
-export class HallVM {
+export class HallsVM {
   private _hallsStore: HallsStore;
 
   constructor(hallsStore: HallsStore) {
@@ -19,7 +19,7 @@ export class HallVM {
     return this._hallsStore.halls;
   }
 
-  getCinemaHalls(cinemaId: number): IHallEntity[] {
-    return this.halls.filter((hall: IHallEntity) => hall.cinemaId === cinemaId);
+  getCinemaHalls(cinemaId: number, filmId: number): IHallEntity[] {
+    return this.halls.filter((hall: IHallEntity) => hall.cinemaId === cinemaId && hall.filmsId.includes(filmId));
   }
 }

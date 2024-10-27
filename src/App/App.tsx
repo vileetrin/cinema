@@ -2,7 +2,7 @@ import FilmsPage from '../domains/films/pages/FilmsPage/FilmsPage.tsx';
 import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import css from './App.module.css';
 import FilmDetailsPage from '../domains/films/pages/FilmDetailsPage/FilmDetailsPage.tsx';
-import BuyTicketsForm from '../domains/cinema/components/Form/BuyTicketsForm.tsx';
+import BuyTicketsForm from '../domains/cinema/components/BuyTicketsForm/BuyTicketsForm.tsx';
 
 const App = () => {
   return (

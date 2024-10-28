@@ -22,4 +22,24 @@ export class HallsVM {
   getCinemaHalls(cinemaId: number, filmId: number): IHallEntity[] {
     return this.halls.filter((hall: IHallEntity) => hall.cinemaId === cinemaId && hall.filmsId.includes(filmId));
   }
+
+  getHallSeats(hallId: number): number | undefined {
+    const hall: IHallEntity | undefined = this.halls.find((hall: IHallEntity): boolean => hallId === hall.id);
+    if (!hall) {
+      return undefined;
+    } else {
+      return hall.seatsQuantity;
+    }
+  }
+
+  getSeatsArray(hallId: number) {
+    const seatsQuantity: number | undefined = this.getHallSeats(hallId);
+    const seats: number[] = [];
+    if (seatsQuantity) {
+      for (let i = 1; i < seatsQuantity + 1; i++) {
+        seats.push(i);
+      }
+      return seats;
+    }
+  }
 }

@@ -8,9 +8,10 @@ import ICinemaEntity from '../../store/ICinemaEntity.ts';
 
 interface CinemaPickerProps {
   setFieldValue: (field: string, value: any) => void;
+  filmId: string | undefined;
 }
 
-const CinemaPicker = observer(({ setFieldValue }: CinemaPickerProps) => {
+const CinemaPicker = observer(({ setFieldValue, filmId }: CinemaPickerProps) => {
   const { cinemaStore } = useStore();
 
   const vm = useMemo(() => {
@@ -18,7 +19,7 @@ const CinemaPicker = observer(({ setFieldValue }: CinemaPickerProps) => {
   }, []);
 
   useEffect((): void => {
-    vm.init();
+    vm.init(Number(filmId));
   }, []);
 
   return (

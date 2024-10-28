@@ -15,8 +15,8 @@ export class CinemaVM {
     });
   }
 
-  public init(): void {
-    CinemasServerRepo.loadCinemas().then((cinemas: ICinemaEntity[]): void => {
+  public init(filmId: number): void {
+    CinemasServerRepo.loadCinemas(filmId).then((cinemas: ICinemaEntity[]): void => {
       this._cinemaStore.setCinemas(cinemas);
     });
   }

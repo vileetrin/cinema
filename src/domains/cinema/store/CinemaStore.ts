@@ -1,10 +1,5 @@
 import ICinemaEntity from './ICinemaEntity.ts';
-import {
-  action,
-  computed,
-  makeObservable,
-  observable,
-} from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 class CinemaStore {
   _cinemas: ICinemaEntity[] = [];
@@ -14,7 +9,6 @@ class CinemaStore {
       _cinemas: observable,
       cinemas: computed,
       setCinemas: action,
-      getFilmById: observable,
     });
   }
 
@@ -24,13 +18,6 @@ class CinemaStore {
 
   setCinemas(cinemas: ICinemaEntity[]): void {
     this._cinemas = cinemas;
-  }
-
-  getFilmById(cinemaId: number): ICinemaEntity | undefined {
-    return this.cinemas.find(
-      (cinema: ICinemaEntity): boolean =>
-        cinema.id === cinemaId
-    );
   }
 }
 

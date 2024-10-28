@@ -4,10 +4,14 @@ import IOrderEntity from '../store/IOrderEntity.ts';
 import FilmsStore from '../../films/store/FilmsStore.ts';
 import CinemaStore from '../../cinema/store/CinemaStore.ts';
 
+// import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
+
 export class OrdersVM {
   private _ordersStore: OrdersStore;
   private _filmsStore: FilmsStore;
   private _cinemaStore: CinemaStore;
+
+  // private repository: OrdersServerRepo;
 
   constructor(ordersStore: OrdersStore, filmsStore: FilmsStore, cinemaStore: CinemaStore) {
     this._ordersStore = ordersStore;
@@ -39,4 +43,16 @@ export class OrdersVM {
       return cinema.address;
     }
   }
+
+  // async fetchOrders(page: number, pageSize: number): Promise<IOrderEntity[]> {
+  //   return await this.repository.getOrders(page, pageSize);
+  // }
+  //
+  // async getTotalOrdersCount(): Promise<number> {
+  //   return await this.repository.getTotalOrdersCount();
+  // }
+  //
+  // async addOrder(order: IOrderEntity): Promise<void> {
+  //   await this.repository.addOrder(order);
+  // }
 }

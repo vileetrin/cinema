@@ -19,11 +19,13 @@ export class FormVM {
       getHallSeats: observable,
       getSeatsArray: observable,
       makeOrder: action,
+      toggleSeat: action,
+      chosenSeats: observable,
     });
   }
 
-  public init(): void {
-    HallsServerRepo.loadHalls().then((halls: IHallEntity[]): void => {
+  public init(cinemaId: number, filmId: number): void {
+    HallsServerRepo.loadHalls(cinemaId, filmId).then((halls: IHallEntity[]): void => {
       this._hallsStore.setHalls(halls);
     });
   }
@@ -58,5 +60,13 @@ export class FormVM {
 
   makeOrder(order: IOrderEntity): void {
     this._ordersStore.addOrder(order);
+  }
+
+  chosenSeats(hallId: number): number[] {
+    return this._hallsStore.getSelectedSeats(hallId);
+  }
+
+  toggleSeat(seat: number, hallId: number): void {
+    this._hallsStore.toggleSeat(hallId, seat);
   }
 }

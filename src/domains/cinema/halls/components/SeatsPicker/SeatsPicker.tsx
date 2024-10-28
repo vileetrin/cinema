@@ -1,43 +1,35 @@
 import { observer } from 'mobx-react-lite';
-import { Field } from 'formik';
-import { useState } from 'react';
 import css from './SeatsPicker.module.css';
 
 interface SeatsPickerProps {
   seats: number[] | undefined;
+  toggleSeat: (seat: number) => void;
+  chosenSeats: number[];
   setFieldValue: (field: string, value: any) => void;
 }
 
-const SeatsPicker = observer(({ seats, setFieldValue }: SeatsPickerProps) => {
-  const [chosenSeats, setChosenSeats] = useState([]);
+const SeatsPicker = observer(({ seats, toggleSeat, chosenSeats, setFieldValue }: SeatsPickerProps) => {
+  console.log('Chosen seats:', chosenSeats);
 
-  const handleChange = (seat: number) => {
-    setChosenSeats((prevSeats: number[]): number[] => {
-      if (!prevSeats.includes(seat)) {
-        return [...prevSeats, seat];
-      }
-      return prevSeats;
-    });
+  const handleSeatToggle = (seat: number) => {
+    toggleSeat(seat);
+    setFieldValue('seats', [...chosenSeats]);
   };
 
   return (
     <div className={css.container}>
       <h3>Choose seats:</h3>
       <div className={css.toolbar}>
-        {seats.map(seat => (
-          <>
-            <Field
+        {seats?.map(seat => (
+          <div key={seat}>
+            <input
               type="checkbox"
-              name="seat"
               id={`seat-${seat}`}
-              value={seat.toString()}
-              onClick={() => setFieldValue('seats', chosenSeats)}
-              onChange={() => handleChange(seat)}
+              checked={chosenSeats.includes(seat)}
+              onChange={() => handleSeatToggle(seat)}
             />
-            <label key={seat} htmlFor={`seat-${seat}`}>
-              Seat {seat}
-            </label>
-          </>
+            <label htmlFor={`seat-${seat}`}>Seat {seat}</label>
+          </div>
         ))}
       </div>
     </div>

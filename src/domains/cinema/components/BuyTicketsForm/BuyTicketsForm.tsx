@@ -31,7 +31,9 @@ const BuyTicketsForm = observer(() => {
   const vm = useMemo(() => new FormVM(hallsStore, ordersStore), []);
 
   useEffect((): void => {
-    vm.init();
+    if (filmId && initialValues.cinema) {
+      vm.init(Number(initialValues.cinema), Number(filmId));
+    }
   }, []);
 
   const handleNext = (): void => {
@@ -70,7 +72,7 @@ const BuyTicketsForm = observer(() => {
         <Form>
           {step === 1 && (
             <>
-              <CinemaPicker setFieldValue={setFieldValue} />
+              <CinemaPicker setFieldValue={setFieldValue} filmId={filmId} />
               <button type="button" onClick={(): void => handleNext()} className={css.btn}>
                 <TbPlayerTrackNext />
               </button>
@@ -105,7 +107,12 @@ const BuyTicketsForm = observer(() => {
 
           {step === 3 && (
             <>
-              <SeatsPicker seats={vm.getSeatsArray(Number(values.hall))} setFieldValue={setFieldValue} />
+              <SeatsPicker
+                seats={vm.getSeatsArray(Number(values.hall))}
+                toggleSeat={seat => vm.toggleSeat(seat, Number(values.hall))}
+                chosenSeats={vm.chosenSeats(Number(values.hall))}
+                setFieldValue={setFieldValue}
+              />
               <button type="button" onClick={(): void => handlePrevious()} className={css.btn}>
                 <IoPlayBackOutline />
               </button>

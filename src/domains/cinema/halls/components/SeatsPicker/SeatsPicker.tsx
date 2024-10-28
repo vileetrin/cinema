@@ -1,5 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { Field } from 'formik';
+import { useState } from 'react';
+import css from './SeatsPicker.module.css';
 
 interface SeatsPickerProps {
   seats: number[] | undefined;
@@ -7,15 +9,35 @@ interface SeatsPickerProps {
 }
 
 const SeatsPicker = observer(({ seats, setFieldValue }: SeatsPickerProps) => {
+  const [chosenSeats, setChosenSeats] = useState([]);
+
+  const handleChange = (seat: number) => {
+    setChosenSeats((prevSeats: number[]): number[] => {
+      if (!prevSeats.includes(seat)) {
+        return [...prevSeats, seat];
+      }
+      return prevSeats;
+    });
+  };
+
   return (
-    <div>
+    <div className={css.container}>
       <h3>Choose seats:</h3>
-      <div>
+      <div className={css.toolbar}>
         {seats.map(seat => (
-          <label key={seat}>
-            <Field type="checkbox" name="seat" value={seat.toString()} />
-            Место {seat}
-          </label>
+          <>
+            <Field
+              type="checkbox"
+              name="seat"
+              id={`seat-${seat}`}
+              value={seat.toString()}
+              onClick={() => setFieldValue('seats', chosenSeats)}
+              onChange={() => handleChange(seat)}
+            />
+            <label key={seat} htmlFor={`seat-${seat}`}>
+              Seat {seat}
+            </label>
+          </>
         ))}
       </div>
     </div>

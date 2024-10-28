@@ -1,0 +1,39 @@
+.radioToolbar input[type="radio"] {
+    display: none;
+}
+
+.radioToolbar label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 9px;
+    cursor: pointer;
+    border: 1px solid #DAD0FF;
+    border-radius: 10px;
+
+    height: 30px;
+    width: 70px
+}
+
+.radioToolbar input[type="radio"]:checked + label {
+    background-color: #ffb7b7;
+    border: 1px solid #a91c1c;
+}
+
+.radioToolbar label:hover {
+    background-color: #ffb7b7;
+    border: 1px solid #a91c1c;
+}
+
+.radioToolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+}

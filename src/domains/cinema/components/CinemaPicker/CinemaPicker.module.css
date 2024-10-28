@@ -1,6 +1,6 @@
-/*.radioToolbar input[type="radio"] {*/
-/*    display: none;*/
-/*}*/
+.radioToolbar input[type="radio"] {
+    display: none;
+}
 
 .radioToolbar label {
     display: flex;

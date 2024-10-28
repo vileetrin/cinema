@@ -4,6 +4,7 @@ import { CinemaVM } from '../../ViewModels/CinemaVM.ts';
 import { useStore } from '../../../../infrastructure/StoreContext.ts';
 import { useEffect, useMemo } from 'react';
 import css from './CinemaPicker.module.css';
+import ICinemaEntity from '../../store/ICinemaEntity.ts';
 
 interface CinemaPickerProps {
   setFieldValue: (field: string, value: any) => void;
@@ -16,7 +17,7 @@ const CinemaPicker = observer(({ setFieldValue }: CinemaPickerProps) => {
     return new CinemaVM(cinemaStore);
   }, []);
 
-  useEffect(() => {
+  useEffect((): void => {
     vm.init();
   }, []);
 
@@ -24,16 +25,19 @@ const CinemaPicker = observer(({ setFieldValue }: CinemaPickerProps) => {
     <div className={css.container}>
       <h3>Choose cinema:</h3>
       <div className={css.radioToolbar}>
-        {vm.cinemas.map(cinema => (
-          <label key={cinema.id}>
+        {vm.cinemas.map((cinema: ICinemaEntity) => (
+          <>
             <Field
               type="radio"
               name="cinema"
               value={cinema.id.toString()}
+              id={`cinema - ${cinema.id}`}
               onClick={() => setFieldValue('cinema', cinema.id)}
             />
-            {cinema.address}
-          </label>
+            <label key={cinema.id} htmlFor={`cinema - ${cinema.id}`}>
+              {cinema.address}
+            </label>
+          </>
         ))}
       </div>
     </div>

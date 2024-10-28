@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import css from './App.module.css';
 import FilmDetailsPage from '../domains/films/pages/FilmDetailsPage/FilmDetailsPage.tsx';
 import BuyTicketsForm from '../domains/cinema/components/BuyTicketsForm/BuyTicketsForm.tsx';
+import OrdersHistoryPage from '../domains/order/pages/OrdersHistoryPage/OrdersHistoryPage.tsx';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/:filmId" element={<FilmDetailsPage />}>
           <Route path="order" element={<BuyTicketsForm />} />
         </Route>
+        <Route path="/orders" element={<OrdersHistoryPage />} />
       </Routes>
     </Router>
   );

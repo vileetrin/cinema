@@ -6,7 +6,10 @@ import { useParams } from 'react-router-dom';
 import HallPicker from '../../halls/components/HallPicker/HallPicker.tsx';
 import SeatsPicker from '../../halls/components/SeatsPicker/SeatsPicker.tsx';
 import { useStore } from '../../../../infrastructure/StoreContext.ts';
-import { HallsVM } from '../../halls/ViewModels/HallsVM.ts';
+import css from './BuyTicketsForm.module.css';
+import { FormVM } from '../../ViewModels/FormVM.ts';
+import { TbPlayerTrackNext } from 'react-icons/tb';
+import { IoPlayBackOutline } from 'react-icons/io5';
 
 interface FormValues {
   cinema: number;
@@ -21,24 +24,44 @@ const initialValues: FormValues = {
 };
 
 const BuyTicketsForm = observer(() => {
-  const { hallsStore } = useStore();
+  const { hallsStore, ordersStore } = useStore();
   const { filmId } = useParams();
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<FormValues>(initialValues);
 
-  const vm = useMemo(() => new HallsVM(hallsStore), []);
+  const vm = useMemo(() => new FormVM(hallsStore, ordersStore), []);
 
-  useEffect(() => {
+  useEffect((): void => {
     vm.init();
   }, []);
 
-  const handleNext = (values: FormValues) => {
-    setFormData({ ...values });
+  const handleNext = (): void => {
     setStep(step + 1);
   };
 
-  const handleSubmit = () => {
-    alert(`Cinema: ${formData.cinema}, hall: ${formData.hall}, seats: ${formData.seats.join(', ')}`);
+  const handlePrevious = (): void => {
+    setStep(step - 1);
+  };
+
+  const handleSubmit = (values: FormValues, actions: any): void => {
+    alert(`Your ticket:\nCinema: ${values.cinema}, hall: ${values.hall}, seats: ${values.seats.join(', ')}`);
+    const order = {
+      id: Math.random(),
+      cinemaId: values.cinema,
+      filmId: Number(filmId),
+      hallId: values.hall,
+      seats: values.seats,
+      date: new Date().toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }),
+    };
+    vm.makeOrder(order);
+    actions.resetForm();
+    setStep(step + 1);
   };
 
   return (
@@ -48,28 +71,54 @@ const BuyTicketsForm = observer(() => {
           {step === 1 && (
             <>
               <CinemaPicker setFieldValue={setFieldValue} />
-              <button type="button" onClick={() => handleNext(values)}>
-                Next
+              <button type="button" onClick={(): void => handleNext()} className={css.btn}>
+                <TbPlayerTrackNext />
               </button>
             </>
           )}
 
           {step === 2 && (
             <>
-              <HallPicker
-                halls={vm.getCinemaHalls(Number(values.cinema), Number(filmId))}
-                setFieldValue={setFieldValue}
-              />
-              <button type="button" onClick={() => handleNext(values)}>
-                Next
-              </button>
+              {vm.getCinemaHalls(Number(values.cinema), Number(filmId)).length <= 0 ? (
+                <>
+                  <p>Sorry, we don`t have this film in this cinema :(</p>
+                  <button type="button" onClick={(): void => handlePrevious()} className={css.btn}>
+                    Back
+                  </button>
+                </>
+              ) : (
+                <>
+                  <HallPicker
+                    halls={vm.getCinemaHalls(Number(values.cinema), Number(filmId))}
+                    setFieldValue={setFieldValue}
+                  />
+                  <button type="button" onClick={(): void => handlePrevious()} className={css.btn}>
+                    <IoPlayBackOutline />
+                  </button>
+                  <button type="button" onClick={(): void => handleNext()} className={css.btn}>
+                    <TbPlayerTrackNext />
+                  </button>
+                </>
+              )}
             </>
           )}
 
           {step === 3 && (
             <>
               <SeatsPicker seats={vm.getSeatsArray(Number(values.hall))} setFieldValue={setFieldValue} />
-              <button type="submit">Buy Tickets</button>
+              <button type="button" onClick={(): void => handlePrevious()} className={css.btn}>
+                <IoPlayBackOutline />
+              </button>
+              <button type="submit" className={css.btn}>
+                Buy Tickets
+              </button>
+            </>
+          )}
+
+          {step === 4 && (
+            <>
+              <h3> Thank you for order! :)</h3>
+              <p>Go back to film list</p>
             </>
           )}
         </Form>

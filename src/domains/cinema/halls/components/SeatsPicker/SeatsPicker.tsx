@@ -10,7 +10,7 @@ interface SeatsPickerProps {
   hallId: number;
   filmId: string | undefined;
   orders: IOrderEntity[];
-  setFieldValue: (field: string, value: any) => void;
+  setFieldValue: (field: string, value: number[]) => void;
 }
 
 const SeatsPicker = observer(
@@ -39,7 +39,11 @@ const SeatsPicker = observer(
                   type="checkbox"
                   id={`seat-${seat}`}
                   checked={chosenSeats.includes(seat)}
-                  onChange={() => handleSeatToggle(seat)}
+                  onChange={() => {
+                    if (!isChosen(seat, hallId, Number(filmId))) {
+                      handleSeatToggle(seat);
+                    }
+                  }}
                 />
                 <label
                   htmlFor={`seat-${seat}`}

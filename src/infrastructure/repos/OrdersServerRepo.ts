@@ -1,72 +1,31 @@
-import IOrderEntity from '../../domains/order/store/IOrderEntity';
-
-const ordersDatabase: IOrderEntity[] = Array.from({ length: 10 }, (_, index: number) => ({
-  id: index + 1,
-  cinemaId: Math.floor(Math.random() * 3) + 1,
-  filmId: Math.floor(Math.random() * 9) + 1,
-  hallId: Math.floor(Math.random() * 5) + 1,
-  seats: Array.from({ length: Math.floor(Math.random() * 5) + 1 }, () => Math.floor(Math.random() * 100)),
-  date: new Date().toLocaleString(),
-}));
+import IOrderEntity from '../../domains/order/store/IOrderEntity.ts';
 
 class OrdersServerRepo {
-  private static PAGE_SIZE = 6;
+  private static _orders: IOrderEntity[] = [
+    { id: 1, filmId: 1, cinemaId: 1, hallId: 1, seats: [1, 2], date: '25.10.2024' },
+    { id: 2, filmId: 2, cinemaId: 2, hallId: 2, seats: [3, 4], date: '26.09.2024' },
+    { id: 3, filmId: 3, cinemaId: 3, hallId: 3, seats: [5, 6], date: '7.01.2023' },
+    { id: 4, filmId: 4, cinemaId: 1, hallId: 4, seats: [7, 8], date: '18.04.2021' },
+    { id: 5, filmId: 5, cinemaId: 2, hallId: 5, seats: [9, 10], date: '13.11.2024' },
+    { id: 6, filmId: 6, cinemaId: 3, hallId: 6, seats: [11, 12], date: '01.01.2023' },
+  ];
 
-  static async getOrders(page: number, pageSize: number = OrdersServerRepo.PAGE_SIZE): Promise<IOrderEntity[]> {
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    return new Promise(resolve => {
-      setTimeout(() => resolve(ordersDatabase.slice(start, end)), 500);
-    });
-  }
-
-  static async getTotalOrdersCount(): Promise<number> {
-    return new Promise(resolve => {
-      setTimeout(() => resolve(ordersDatabase.length), 500);
-    });
+  static async loadOrders(page: number, pageSize: number): Promise<{ orders: IOrderEntity[]; total: number }> {
+    const startIndex = (page - 1) * pageSize;
+    const paginatedOrders = this._orders.slice(startIndex, startIndex + pageSize);
+    return { orders: paginatedOrders, total: this._orders.length };
   }
 
   static async addOrder(order: IOrderEntity): Promise<void> {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        ordersDatabase.push(order);
-        resolve();
-      }, 500);
-    });
+    this._orders.push(order);
+  }
+
+  static async deleteOrder(orderId: number): Promise<void> {
+    const index = this._orders.findIndex(order => order.id === orderId);
+    if (index > -1) {
+      this._orders.splice(index, 1);
+    }
   }
 }
 
 export default OrdersServerRepo;
-
-// import IOrderEntity from '../../domains/order/store/IOrderEntity';
-//
-// class OrdersServerRepo {
-//   private orders: IOrderEntity[] = [];
-//
-//   constructor() {
-//     this.orders = Array.from({ length: 10 }, (_, index: number) => ({
-//       id: index + 1,
-//       cinemaId: Math.floor(Math.random() * 5) + 1,
-//       filmId: Math.floor(Math.random() * 10) + 1,
-//       hallId: Math.floor(Math.random() * 5) + 1,
-//       seats: Array.from({ length: Math.floor(Math.random() * 5) + 1 }, () => Math.floor(Math.random() * 100)),
-//       date: new Date().toLocaleString(),
-//     }));
-//   }
-//
-//   async addOrder(order: IOrderEntity): Promise<void> {
-//     this.orders.push({ ...order, id: this.orders.length + 1 });
-//   }
-//
-//   async getOrders(page: number, pageSize: number): Promise<IOrderEntity[]> {
-//     const start = (page - 1) * pageSize;
-//     const end = start + pageSize;
-//     return this.orders.slice(start, end);
-//   }
-//
-//   async getTotalOrdersCount(): Promise<number> {
-//     return this.orders.length;
-//   }
-// }
-//
-// export default OrdersServerRepo;

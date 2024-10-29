@@ -4,6 +4,7 @@ import IHallEntity from '../halls/store/IHallEntity.ts';
 import OrdersStore from '../../order/store/OrdersStore.ts';
 import IOrderEntity from '../../order/store/IOrderEntity.ts';
 import { action, computed, makeObservable, observable } from 'mobx';
+
 import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 
 export class FormVM {
@@ -14,7 +15,7 @@ export class FormVM {
     this._hallsStore = hallsStore;
     this._ordersStore = ordersStore;
     makeObservable(this, {
-      init: observable,
+      init: action,
       halls: computed,
       orders: computed,
       getCinemaHalls: observable,
@@ -24,7 +25,6 @@ export class FormVM {
       toggleSeat: action,
       chosenSeats: observable,
       clearSelectedSeats: action,
-      // isChosen: observable,
     });
   }
 
@@ -34,7 +34,7 @@ export class FormVM {
     });
   }
 
-  get halls(): Array<IHallEntity> {
+  get halls(): IHallEntity[] {
     return this._hallsStore.halls;
   }
 
@@ -43,32 +43,28 @@ export class FormVM {
   }
 
   getCinemaHalls(cinemaId: number, filmId: number): IHallEntity[] {
-    return this.halls.filter((hall: IHallEntity) => hall.cinemaId === cinemaId && hall.filmsId.includes(filmId));
+    return this.halls.filter(hall => hall.cinemaId === cinemaId && hall.filmsId.includes(filmId));
   }
 
   getHallSeats(hallId: number): number | undefined {
-    const hall: IHallEntity | undefined = this.halls.find((hall: IHallEntity): boolean => hallId === hall.id);
-    if (!hall) {
-      return undefined;
-    } else {
-      return hall.seatsQuantity;
-    }
+    const hall = this.halls.find(hall => hallId === hall.id);
+    return hall ? hall.seatsQuantity : undefined;
   }
 
-  getSeatsArray(hallId: number) {
-    const seatsQuantity: number | undefined = this.getHallSeats(hallId);
+  getSeatsArray(hallId: number): number[] {
+    const seatsQuantity = this.getHallSeats(hallId);
     const seats: number[] = [];
     if (seatsQuantity) {
-      for (let i = 1; i < seatsQuantity + 1; i++) {
+      for (let i = 1; i <= seatsQuantity; i++) {
         seats.push(i);
       }
-      return seats;
     }
+    return seats;
   }
 
   async makeOrder(order: IOrderEntity): Promise<void> {
     await OrdersServerRepo.addOrder(order);
-    this._ordersStore.addOrder(order);
+    // await this._ordersStore.addOrder(order);
   }
 
   chosenSeats(hallId: number): number[] {
@@ -79,19 +75,7 @@ export class FormVM {
     this._hallsStore.toggleSeat(hallId, seat);
   }
 
-  clearSelectedSeats() {
+  clearSelectedSeats(): void {
     this._hallsStore.selectedSeats = [];
   }
-
-  // isChosen(hallId: number, filmId: number, seat: number) {
-  //   return !!this.orders.find(
-  //     order => order.seats.includes(seat) && order.hallId === hallId && order.filmId === filmId
-  //   );
-  // }
-
-  // isChosen(seats: number[], filmId: number, hallId: number): boolean {
-  //   return !!seats.find(seat =>
-  //     this.orders.find(order => order.hallId === hallId && order.filmId === filmId && order.seats.includes(seat))
-  //   );
-  // }
 }

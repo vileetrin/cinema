@@ -1,31 +1,51 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 import IOrderEntity from './IOrderEntity.ts';
+import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 
 class OrdersStore {
   _orders: IOrderEntity[] = [];
+  _totalOrders: number = 0;
+  _currentPage: number = 1;
+  _pageSize: number = 5;
 
   constructor() {
     makeObservable(this, {
       _orders: observable,
+      _totalOrders: observable,
       orders: computed,
+      loadOrders: action,
       addOrder: action,
       deleteOrder: action,
     });
   }
 
-  get orders(): Array<IOrderEntity> {
+  get orders(): IOrderEntity[] {
     return this._orders;
   }
 
-  addOrder(order: IOrderEntity): void {
-    this._orders.unshift(order);
+  get totalOrders(): number {
+    return this._totalOrders;
   }
 
-  deleteOrder(orderId: number): void {
-    const index: number = this._orders.findIndex((o): boolean => o.id === orderId);
-    if (index > -1) {
-      this._orders.splice(index, 1);
-    }
+  get currentPage(): number {
+    return this._currentPage;
+  }
+
+  async loadOrders(page: number = 1): Promise<void> {
+    const { orders, total } = await OrdersServerRepo.loadOrders(page, this._pageSize);
+    this._orders = orders;
+    this._totalOrders = total;
+    this._currentPage = page;
+  }
+
+  async addOrder(order: IOrderEntity): Promise<void> {
+    await OrdersServerRepo.addOrder(order);
+    await this.loadOrders(this._currentPage);
+  }
+
+  async deleteOrder(orderId: number): Promise<void> {
+    await OrdersServerRepo.deleteOrder(orderId);
+    await this.loadOrders(this._currentPage);
   }
 }
 

@@ -1,12 +1,23 @@
 import IFilmEntity from '../../domains/films/store/IFilmEntity.ts';
 
+interface IFilmData {
+  movieId?: number;
+  id?: number;
+  name?: string;
+  title?: string;
+  genre?: string;
+  description?: string;
+  details?: string;
+  image?: string;
+  thumbnail?: string;
+  category?: string;
+}
+
 export class FilmsServerRepo {
-  static loadFilms = (): Promise<Array<IFilmEntity>> => {
-    // go to server
-    // and fetch data from them
-    return Promise.resolve([
+  static loadFilms = async (): Promise<Array<IFilmEntity>> => {
+    const data: IFilmData[] = [
       {
-        id: 1,
+        movieId: 1,
         name: 'Eclipse',
         genre: 'Science Fiction',
         description:
@@ -18,47 +29,47 @@ export class FilmsServerRepo {
         name: 'The Shawshank Redemption',
         genre: 'Drama',
         description:
-          'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency. Andy Dufresne, a banker wrongly convicted of murder, forms a friendship with fellow inmate Ellis “Red” Redding as they navigate life in Shawshank State Penitentiary, battling corruption, brutality, and their own sense of hope and despair.',
-        image: '/img/shawshank-redemption.png',
+          'Two imprisoned men bond over a number of лет, находя утешение и в конечном счете искупление через акты общей порядочности.',
+        thumbnail: '/img/shawshank-redemption.png',
       },
       {
-        id: 3,
+        movieId: 3,
         name: 'The Godfather',
         genre: 'Crime',
         description:
-          "An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son Michael. As he navigates the treacherous world of mob politics and family loyalty, Michael must confront the violent legacy of his family and the dangers of power, ultimately transforming from reluctant outsider to ruthless leader.",
+          "An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son Michael.",
         image: '/img/godfather.png',
       },
       {
         id: 4,
-        name: 'The Dark Knight',
+        title: 'The Dark Knight',
         genre: 'Action',
-        description:
-          "When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham. Batman, Gordon, and Harvey Dent form an alliance to dismantle organized crime in Gotham, but their efforts are thwarted by the Joker's twisted sense of morality and his insatiable desire to create chaos, leading to a series of harrowing confrontations.",
-        image: '/img/dark-knight.png',
+        details:
+          'Когда угроза, известная как Джокер, появляется из своего загадочного прошлого, он сеет хаос среди людей Готэма.',
+        thumbnail: '/img/dark-knight.png',
       },
       {
         id: 5,
-        name: 'Pulp Fiction',
+        title: 'Pulp Fiction',
         genre: 'Crime',
         description:
-          "The lives of two mob hitmen, a boxer, a gangster's wife, and a pair of diner bandits intertwine in four tales of violence and redemption. Quentin Tarantino weaves a complex narrative that explores the moral ambiguities of crime and the interconnectedness of human experiences in a vibrant, stylized Los Angeles.",
+          "The lives of two mob hitmen, a boxer, a gangster's wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
         image: '/img/pulp-fiction.png',
       },
       {
         id: 6,
         name: 'Forrest Gump',
-        genre: 'Drama',
+        category: 'Drama',
         description:
-          'The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal, and other historical events unfold through the perspective of an Alabama man with an IQ of 75. Forrest Gump inadvertently influences many historical events while trying to be with his childhood sweetheart, Jenny, in a poignant tale of love and destiny.',
+          'The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal, and other historical events unfold through the perspective of an Alabama man with an IQ of 75.',
         image: '/img/forrest-gump.png',
       },
       {
         id: 7,
         name: 'Fight Club',
-        genre: 'Drama',
+        category: 'Drama',
         description:
-          'An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into something much, much more. As they grapple with their identities and the consumerist culture that surrounds them, they embark on a journey of self-discovery, rebellion, and chaos that challenges societal norms.',
+          'An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into something much, much more.',
         image: '/img/fight-club.png',
       },
       {
@@ -66,17 +77,28 @@ export class FilmsServerRepo {
         name: 'The Matrix',
         genre: 'Science Fiction',
         description:
-          'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers. Neo discovers that he is "The One" who can manipulate the Matrix, leading him on a mind-bending journey of self-discovery and rebellion against the oppressive forces controlling humanity.',
+          'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
         image: '/img/matrix.png',
       },
       {
-        id: 9,
+        movieId: 9,
         name: 'Interstellar',
         genre: 'Science Fiction',
-        description:
-          "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival. Led by former NASA pilot Cooper, they embark on a mission that challenges the very fabric of space and time, confronting existential threats and the bond between father and daughter in a race against time.",
+        details: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
         image: '/img/interstellar.png',
       },
-    ]);
+    ];
+
+    return data.map(this.transformToIFilmEntity);
   };
+
+  private static transformToIFilmEntity(data: IFilmData): IFilmEntity {
+    return {
+      id: Number(data.id || data.movieId) || 0,
+      name: String(data.name || data.title) || 'Unknown',
+      genre: String(data.genre || data.category) || 'Unknown',
+      description: String(data.description || data.details) || 'No description available',
+      image: String(data.image || data.thumbnail) || '/img/default.png',
+    };
+  }
 }

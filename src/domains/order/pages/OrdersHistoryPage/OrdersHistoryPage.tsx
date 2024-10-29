@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../../../infrastructure/StoreContext.ts';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { OrdersVM } from '../../ViewModels/OrdersVM.ts';
 import Order from '../../components/Order/Order.tsx';
 import css from './OrdersHistoryPage.module.css';
@@ -8,19 +8,13 @@ import css from './OrdersHistoryPage.module.css';
 const OrdersHistoryPage = observer(() => {
   const { ordersStore, filmsStore, cinemaStore } = useStore();
   const vm = useMemo(() => new OrdersVM(ordersStore, filmsStore, cinemaStore), []);
-  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    const fetchInitialOrders = async () => {
-      setLoading(true);
-      await vm.loadOrders(1);
-      setLoading(false);
-    };
-    fetchInitialOrders();
+    vm.loadOrders(vm.currentPage);
   }, [vm]);
-  const loadMoreOrders = async () => {
-    setLoading(true);
-    await vm.loadOrders(vm.page + 1);
-    setLoading(false);
+
+  const handleLoadMore = () => {
+    vm.loadOrders(vm.currentPage + 1);
   };
 
   return (
@@ -33,10 +27,13 @@ const OrdersHistoryPage = observer(() => {
           <Order order={order} vm={vm} key={order.id} />
         ))}
       </ul>
-      <button onClick={loadMoreOrders} disabled={loading} className={css.loadMoreButton}>
-        {loading ? 'Loading...' : 'Load more'}
-      </button>
+      {vm.currentPage * ordersStore._pageSize < vm.totalOrders && (
+        <button onClick={handleLoadMore} className={css.loadMoreBtn}>
+          Load more
+        </button>
+      )}
     </div>
   );
 });
+
 export default OrdersHistoryPage;

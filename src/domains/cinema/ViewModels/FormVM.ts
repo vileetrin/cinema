@@ -4,6 +4,7 @@ import IHallEntity from '../halls/store/IHallEntity.ts';
 import OrdersStore from '../../order/store/OrdersStore.ts';
 import IOrderEntity from '../../order/store/IOrderEntity.ts';
 import { action, computed, makeObservable, observable } from 'mobx';
+import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 
 export class FormVM {
   private _hallsStore: HallsStore;
@@ -65,7 +66,8 @@ export class FormVM {
     }
   }
 
-  makeOrder(order: IOrderEntity): void {
+  async makeOrder(order: IOrderEntity): Promise<void> {
+    await OrdersServerRepo.addOrder(order);
     this._ordersStore.addOrder(order);
   }
 

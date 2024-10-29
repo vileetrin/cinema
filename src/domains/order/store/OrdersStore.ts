@@ -18,7 +18,7 @@ class OrdersStore {
   }
 
   addOrder(order: IOrderEntity): void {
-    this._orders.push(order);
+    this._orders.unshift(order);
   }
 
   deleteOrder(orderId: number): void {

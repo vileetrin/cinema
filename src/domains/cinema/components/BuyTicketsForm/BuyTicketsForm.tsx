@@ -53,14 +53,7 @@ const BuyTicketsForm = observer(() => {
       filmId: Number(filmId),
       hallId: values.hall,
       seats: values.seats,
-      date: new Date().toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }),
+      date: new Date().toLocaleString(),
     };
     vm.makeOrder(order);
     actions.resetForm();

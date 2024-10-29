@@ -8,10 +8,10 @@ import Film from '../../components/Film/Film.tsx';
 import { untracked } from 'mobx';
 
 const FilmsPage = observer(() => {
-  const { filmsStore } = useStore();
+  const { filmsStore, ordersStore } = useStore();
 
   const vm = useMemo(() => {
-    return new FilmsPageVM(filmsStore);
+    return new FilmsPageVM(filmsStore, ordersStore);
   }, []);
 
   useEffect(() => {
@@ -20,15 +20,14 @@ const FilmsPage = observer(() => {
 
   return (
     <div className={css.container}>
-      <h1 className={css.title}><span className={css.part}>Films</span> List</h1>
+      <h1 className={css.title}>
+        <span className={css.part}>Films</span> List
+      </h1>
       <ul className={css.list}>
         {vm.films.map((film: IFilmEntity) => {
-            const key: number = untracked((): number => film.id);
-            return (
-              <Film film={film} key={key} />
-            );
-          },
-        )}
+          const key: number = untracked((): number => film.id);
+          return <Film film={film} key={key} isWatched={vm.isWatched(film.id)} />;
+        })}
       </ul>
     </div>
   );

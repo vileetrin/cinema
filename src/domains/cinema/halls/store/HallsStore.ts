@@ -42,13 +42,11 @@ class HallsStore {
   }
 
   toggleSeat(hallId: number, seat: number): void {
-    // console.log(`Toggle seat: ${seat} in hall: ${hallId}`); // Логирование для отладки
     if (this.selectedSeats[hallId]?.includes(seat)) {
       this.deselectSeat(hallId, seat);
     } else {
       this.selectSeat(hallId, seat);
     }
-    // console.log('Updated selected seats (copy):', JSON.parse(JSON.stringify(this.selectedSeats)));
   }
 
   getSelectedSeats(hallId: number) {

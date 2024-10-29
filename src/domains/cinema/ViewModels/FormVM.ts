@@ -15,12 +15,15 @@ export class FormVM {
     makeObservable(this, {
       init: observable,
       halls: computed,
+      orders: computed,
       getCinemaHalls: observable,
       getHallSeats: observable,
       getSeatsArray: observable,
       makeOrder: action,
       toggleSeat: action,
       chosenSeats: observable,
+      clearSelectedSeats: action,
+      // isChosen: observable,
     });
   }
 
@@ -32,6 +35,10 @@ export class FormVM {
 
   get halls(): Array<IHallEntity> {
     return this._hallsStore.halls;
+  }
+
+  get orders() {
+    return this._ordersStore.orders;
   }
 
   getCinemaHalls(cinemaId: number, filmId: number): IHallEntity[] {
@@ -69,4 +76,20 @@ export class FormVM {
   toggleSeat(seat: number, hallId: number): void {
     this._hallsStore.toggleSeat(hallId, seat);
   }
+
+  clearSelectedSeats() {
+    this._hallsStore.selectedSeats = [];
+  }
+
+  // isChosen(hallId: number, filmId: number, seat: number) {
+  //   return !!this.orders.find(
+  //     order => order.seats.includes(seat) && order.hallId === hallId && order.filmId === filmId
+  //   );
+  // }
+
+  // isChosen(seats: number[], filmId: number, hallId: number): boolean {
+  //   return !!seats.find(seat =>
+  //     this.orders.find(order => order.hallId === hallId && order.filmId === filmId && order.seats.includes(seat))
+  //   );
+  // }
 }

@@ -10,6 +10,7 @@ import css from './BuyTicketsForm.module.css';
 import { FormVM } from '../../ViewModels/FormVM.ts';
 import { TbPlayerTrackNext } from 'react-icons/tb';
 import { IoPlayBackOutline } from 'react-icons/io5';
+import { FormikHelpers } from 'formik/dist/types';
 
 interface FormValues {
   cinema: number;
@@ -44,7 +45,7 @@ const BuyTicketsForm = observer(() => {
     setStep(step - 1);
   };
 
-  const handleSubmit = (values: FormValues, actions: any): void => {
+  const handleSubmit = (values: FormValues, actions: FormikHelpers<FormValues>): void => {
     alert(`Your ticket:\nCinema: ${values.cinema}, hall: ${values.hall}, seats: ${values.seats.join(', ')}`);
     const order = {
       id: Math.random(),
@@ -64,6 +65,7 @@ const BuyTicketsForm = observer(() => {
     vm.makeOrder(order);
     actions.resetForm();
     setStep(step + 1);
+    vm.clearSelectedSeats();
   };
 
   return (
@@ -111,6 +113,9 @@ const BuyTicketsForm = observer(() => {
                 seats={vm.getSeatsArray(Number(values.hall))}
                 toggleSeat={seat => vm.toggleSeat(seat, Number(values.hall))}
                 chosenSeats={vm.chosenSeats(Number(values.hall))}
+                hallId={values.hall}
+                filmId={filmId}
+                orders={vm.orders}
                 setFieldValue={setFieldValue}
               />
               <button type="button" onClick={(): void => handlePrevious()} className={css.btn}>

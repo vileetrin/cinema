@@ -34,3 +34,11 @@
     color: black;
     transition: color 0.3s ease;
 }
+
+.iswatched {
+    color: green;
+    border: 1px solid green;
+    border-radius: 30px;
+    text-align: center;
+    margin: 10px 0;
+}

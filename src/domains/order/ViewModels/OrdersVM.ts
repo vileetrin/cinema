@@ -3,8 +3,7 @@ import OrdersStore from '../store/OrdersStore.ts';
 import IOrderEntity from '../store/IOrderEntity.ts';
 import FilmsStore from '../../films/store/FilmsStore.ts';
 import CinemaStore from '../../cinema/store/CinemaStore.ts';
-
-// import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
+import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 
 export class OrdersVM {
   private _ordersStore: OrdersStore;
@@ -44,15 +43,15 @@ export class OrdersVM {
     }
   }
 
-  // async fetchOrders(page: number, pageSize: number): Promise<IOrderEntity[]> {
-  //   return await this.repository.getOrders(page, pageSize);
-  // }
-  //
-  // async getTotalOrdersCount(): Promise<number> {
-  //   return await this.repository.getTotalOrdersCount();
-  // }
-  //
-  // async addOrder(order: IOrderEntity): Promise<void> {
-  //   await this.repository.addOrder(order);
-  // }
+  async fetchOrders(page: number, pageSize: number): Promise<IOrderEntity[]> {
+    return await OrdersServerRepo.getOrders(page, pageSize);
+  }
+
+  async getTotalOrdersCount(): Promise<number> {
+    return await OrdersServerRepo.getTotalOrdersCount();
+  }
+
+  async addOrder(order: IOrderEntity): Promise<void> {
+    await OrdersServerRepo.addOrder(order);
+  }
 }

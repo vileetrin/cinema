@@ -9,7 +9,7 @@ const OrdersHistoryPage = observer(() => {
   const { ordersStore, filmsStore, cinemaStore } = useStore();
 
   const vm = useMemo(() => new OrdersVM(ordersStore, filmsStore, cinemaStore), []);
-  console.log(vm.orders);
+  
   return (
     <div className={css.container}>
       <h1>

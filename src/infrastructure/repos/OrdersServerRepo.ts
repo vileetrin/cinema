@@ -1,10 +1,10 @@
 import IOrderEntity from '../../domains/order/store/IOrderEntity';
 
-class OrdersRepository {
+class OrdersServerRepo {
   private orders: IOrderEntity[] = [];
 
   constructor() {
-    this.orders = Array.from({ length: 50 }, (_, index) => ({
+    this.orders = Array.from({ length: 10 }, (_, index: number) => ({
       id: index + 1,
       cinemaId: Math.floor(Math.random() * 5) + 1,
       filmId: Math.floor(Math.random() * 10) + 1,
@@ -29,4 +29,4 @@ class OrdersRepository {
   }
 }
 
-export default OrdersRepository;
+export default OrdersServerRepo;

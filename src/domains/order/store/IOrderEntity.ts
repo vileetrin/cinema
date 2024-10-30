@@ -4,5 +4,5 @@ export default interface IOrderEntity {
   filmId: number;
   hallId: number;
   seats: number[];
-  date: string;
+  date: Date;
 }

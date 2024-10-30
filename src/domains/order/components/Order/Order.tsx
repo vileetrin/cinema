@@ -6,7 +6,7 @@ import { untracked } from 'mobx';
 import { useEffect } from 'react';
 
 const Order = observer(({ order, vm }: { order: IOrderEntity; vm: OrdersVM }) => {
-  const date = untracked(() => order.date);
+  const date = untracked(() => order.date.toLocaleString());
   const hall = untracked(() => order.hallId);
   const seats = untracked(() => order.seats);
 

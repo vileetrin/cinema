@@ -21,7 +21,7 @@ export class OrdersVM {
       orders: computed,
       totalOrders: computed,
       currentPage: computed,
-      loadOrders: observable,
+      loadOrders: action,
       deleteOrder: action,
       getFilmName: observable,
       getCinemaAddress: observable,

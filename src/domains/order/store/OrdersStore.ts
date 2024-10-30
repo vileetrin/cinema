@@ -34,13 +34,11 @@ class OrdersStore {
 
   async loadOrders(page: number): Promise<void> {
     const { orders, total } = await OrdersServerRepo.loadOrders(page, this._pageSize);
-    // console.log('>>> loadOrders page, this._pageSize', page, this._pageSize);
-    // console.log('<<< loadOrders page res, this._pageSize', orders, total);
     if (page === 1) {
       this._orders = orders;
       this._currentPage = page;
     } else {
-      this._orders = [...this._orders, ...orders];
+      this._orders = [...this.orders, ...orders];
       this._currentPage += 1;
     }
     this._totalOrders = total;
@@ -54,7 +52,8 @@ class OrdersStore {
   async deleteOrder(orderId: number): Promise<void> {
     await OrdersServerRepo.deleteOrder(orderId);
     console.log('CURRENT PAGE: ', this._currentPage);
-    await this.loadOrders(1);
+
+    await this.loadOrders(this._currentPage);
   }
 }
 

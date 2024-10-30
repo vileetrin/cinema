@@ -49,7 +49,7 @@ const BuyTicketsForm = observer(() => {
       filmId: Number(filmId),
       hallId: values.hall,
       seats: values.seats,
-      date: new Date().toLocaleString(),
+      date: new Date(),
     };
 
     await vm.makeOrder(order);
@@ -77,7 +77,7 @@ const BuyTicketsForm = observer(() => {
                 <>
                   <p>Sorry, we don’t have this film in this hall :(</p>
                   <button type="button" onClick={handlePrevious} className={css.btn}>
-                    Back
+                    <IoPlayBackOutline />
                   </button>
                 </>
               ) : (

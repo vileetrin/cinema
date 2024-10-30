@@ -12,6 +12,7 @@ class OrdersStore {
     makeObservable(this, {
       _orders: observable,
       _totalOrders: observable,
+      _currentPage: observable,
       orders: computed,
       loadOrders: action,
       addOrder: action,
@@ -31,11 +32,17 @@ class OrdersStore {
     return this._currentPage;
   }
 
-  async loadOrders(page: number = 1): Promise<void> {
+  async loadOrders(page: number): Promise<void> {
     const { orders, total } = await OrdersServerRepo.loadOrders(page, this._pageSize);
-    this._orders = orders;
+    console.log('loadOrders', orders);
+    if (page === 1) {
+      this._orders = orders;
+      this._currentPage = page;
+    } else {
+      this._orders = [...this._orders, ...orders];
+      this._currentPage += 1;
+    }
     this._totalOrders = total;
-    this._currentPage = page;
   }
 
   async addOrder(order: IOrderEntity): Promise<void> {

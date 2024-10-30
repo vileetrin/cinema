@@ -1,4 +1,4 @@
-import { computed, makeObservable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import OrdersStore from '../store/OrdersStore.ts';
 import IOrderEntity from '../store/IOrderEntity.ts';
 import FilmsStore from '../../films/store/FilmsStore.ts';
@@ -17,11 +17,15 @@ export class OrdersVM {
       orders: computed,
       totalOrders: computed,
       currentPage: computed,
+      loadOrders: observable,
+      deleteOrder: action,
+      // getFilmName: observable,
+      getCinemaAddress: observable,
     });
   }
 
   get orders(): IOrderEntity[] {
-    return this._ordersStore.orders.slice().sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return this._ordersStore.orders;
   }
 
   get totalOrders(): number {
@@ -42,6 +46,7 @@ export class OrdersVM {
 
   getFilmName(filmId: number) {
     const film = this._filmsStore.films.find(film => film.id === filmId);
+    console.log('>>> film', film);
     return film ? film.name : '';
   }
 
@@ -50,5 +55,3 @@ export class OrdersVM {
     return cinema ? cinema.address : '';
   }
 }
-
-export default OrdersVM;

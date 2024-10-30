@@ -19,6 +19,8 @@ const OrdersHistoryPage = observer(() => {
     vm.loadOrders(page);
   };
 
+  console.log(vm.orders);
+
   return (
     <div className={css.container}>
       <h1>

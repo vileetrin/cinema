@@ -23,14 +23,15 @@
 .loadMoreBtn {
     margin: 20px 0;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #ff3a3a;
     color: white;
-    border: none;
-    border-radius: 5px;
+    border: 1px solid #ff3a3a;
+    border-radius: 20px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .loadMoreBtn:hover {
-    background-color: #0056b3;
+    background-color: #ffffff;
+    color: #ff3a3a;
 }

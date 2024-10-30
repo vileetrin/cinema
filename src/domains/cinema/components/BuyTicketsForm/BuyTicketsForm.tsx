@@ -1,4 +1,4 @@
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikProps } from 'formik';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useMemo, useState } from 'react';
 import CinemaPicker from '../CinemaPicker/CinemaPicker.tsx';
@@ -18,12 +18,6 @@ interface FormValues {
   seats: number[];
 }
 
-const initialValues: FormValues = {
-  cinema: 1,
-  hall: 1,
-  seats: [],
-};
-
 const BuyTicketsForm = observer(() => {
   const { hallsStore, ordersStore } = useStore();
   const { filmId } = useParams();
@@ -32,17 +26,18 @@ const BuyTicketsForm = observer(() => {
   const vm = useMemo(() => new FormVM(hallsStore, ordersStore), [hallsStore, ordersStore]);
 
   useEffect(() => {
-    if (filmId && initialValues.cinema) {
-      vm.init(Number(initialValues.cinema), Number(filmId));
-    }
-  }, [filmId, vm]);
+    vm.init(Number(vm.formData.cinema), Number(filmId));
+  }, [vm.formData.cinema]);
 
-  const handleNext = () => {
-    setStep(prevStep => prevStep + 1);
+  // console.log(vm.formData);
+
+  const handleNext = (values: FormValues): void => {
+    vm.setFormData(values);
+    setStep((prevStep: number): number => prevStep + 1);
   };
 
-  const handlePrevious = () => {
-    setStep(prevStep => prevStep - 1);
+  const handlePrevious = (): void => {
+    setStep((prevStep: number): number => prevStep - 1);
   };
 
   const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
@@ -64,13 +59,13 @@ const BuyTicketsForm = observer(() => {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      {({ values, setFieldValue }) => (
+    <Formik initialValues={vm.formData} onSubmit={handleSubmit}>
+      {({ values, setFieldValue }: FormikProps<FormValues>) => (
         <Form>
           {step === 1 && (
             <>
               <CinemaPicker setFieldValue={setFieldValue} filmId={filmId} />
-              <button type="button" onClick={handleNext} className={css.btn}>
+              <button type="button" onClick={(): void => handleNext(values)} className={css.btn}>
                 <TbPlayerTrackNext />
               </button>
             </>
@@ -78,23 +73,20 @@ const BuyTicketsForm = observer(() => {
 
           {step === 2 && (
             <>
-              {vm.getCinemaHalls(Number(values.cinema), Number(filmId)).length <= 0 ? (
+              {vm.halls.length <= 0 ? (
                 <>
-                  <p>Sorry, we don’t have this film in this cinema :(</p>
+                  <p>Sorry, we don’t have this film in this hall :(</p>
                   <button type="button" onClick={handlePrevious} className={css.btn}>
                     Back
                   </button>
                 </>
               ) : (
                 <>
-                  <HallPicker
-                    halls={vm.getCinemaHalls(Number(values.cinema), Number(filmId))}
-                    setFieldValue={setFieldValue}
-                  />
+                  <HallPicker halls={vm.halls} setFieldValue={setFieldValue} />
                   <button type="button" onClick={handlePrevious} className={css.btn}>
                     <IoPlayBackOutline />
                   </button>
-                  <button type="button" onClick={handleNext} className={css.btn}>
+                  <button type="button" onClick={() => handleNext(values)} className={css.btn}>
                     <TbPlayerTrackNext />
                   </button>
                 </>
@@ -106,7 +98,7 @@ const BuyTicketsForm = observer(() => {
             <>
               <SeatsPicker
                 seats={vm.getSeatsArray(Number(values.hall))}
-                toggleSeat={seat => vm.toggleSeat(seat, Number(values.hall))}
+                toggleSeat={(seat: number): void => vm.toggleSeat(seat, Number(values.hall))}
                 chosenSeats={vm.chosenSeats(Number(values.hall))}
                 hallId={values.hall}
                 filmId={filmId}

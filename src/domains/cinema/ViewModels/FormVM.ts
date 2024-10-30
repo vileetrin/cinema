@@ -10,6 +10,11 @@ import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts'
 export class FormVM {
   private _hallsStore: HallsStore;
   private _ordersStore: OrdersStore;
+  public formData: { cinema: number; hall: number; seats: number[] } = {
+    cinema: 0,
+    hall: 0,
+    seats: [],
+  };
 
   constructor(hallsStore: HallsStore, ordersStore: OrdersStore) {
     this._hallsStore = hallsStore;
@@ -18,9 +23,8 @@ export class FormVM {
       init: action,
       halls: computed,
       orders: computed,
-      getCinemaHalls: observable,
       getHallSeats: observable,
-      getSeatsArray: observable,
+      // getSeatsArray: observable,
       makeOrder: action,
       toggleSeat: action,
       chosenSeats: observable,
@@ -35,15 +39,12 @@ export class FormVM {
   }
 
   get halls(): IHallEntity[] {
+    // console.log(this._hallsStore.halls);
     return this._hallsStore.halls;
   }
 
   get orders() {
     return this._ordersStore.orders;
-  }
-
-  getCinemaHalls(cinemaId: number, filmId: number): IHallEntity[] {
-    return this.halls.filter(hall => hall.cinemaId === cinemaId && hall.filmsId.includes(filmId));
   }
 
   getHallSeats(hallId: number): number | undefined {
@@ -77,5 +78,9 @@ export class FormVM {
 
   clearSelectedSeats(): void {
     this._hallsStore.selectedSeats = [];
+  }
+
+  setFormData(values: object) {
+    this.formData = { ...this.formData, ...values };
   }
 }

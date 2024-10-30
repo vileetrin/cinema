@@ -18,9 +18,11 @@ export class FilmsPageVM {
   }
 
   public init(): void {
-    FilmsServerRepo.loadFilms().then((films: IFilmEntity[]): void => {
-      this._filmsStore.setFilms(films);
-    });
+    if (this.films.length === 0) {
+      FilmsServerRepo.loadFilms().then((films: IFilmEntity[]): void => {
+        this._filmsStore.setFilms(films);
+      });
+    }
   }
 
   get films(): Array<IFilmEntity> {
@@ -30,4 +32,12 @@ export class FilmsPageVM {
   isWatched(filmId: number) {
     return !!this._ordersStore.orders.find(order => order.filmId === filmId);
   }
+
+  // async loadInfo() {
+  //   if (this._ordersStore.orders.length === 0) {
+  //     OrdersServerRepo.loadOrders().then((films: IFilmEntity[]): void => {
+  //       this._filmsStore.setFilms(films);
+  //     });
+  //   }
+  // }
 }

@@ -34,7 +34,8 @@ class OrdersStore {
 
   async loadOrders(page: number): Promise<void> {
     const { orders, total } = await OrdersServerRepo.loadOrders(page, this._pageSize);
-    console.log('loadOrders', orders);
+    // console.log('>>> loadOrders page, this._pageSize', page, this._pageSize);
+    // console.log('<<< loadOrders page res, this._pageSize', orders, total);
     if (page === 1) {
       this._orders = orders;
       this._currentPage = page;
@@ -52,7 +53,8 @@ class OrdersStore {
 
   async deleteOrder(orderId: number): Promise<void> {
     await OrdersServerRepo.deleteOrder(orderId);
-    await this.loadOrders(this._currentPage);
+    console.log('CURRENT PAGE: ', this._currentPage);
+    await this.loadOrders(1);
   }
 }
 

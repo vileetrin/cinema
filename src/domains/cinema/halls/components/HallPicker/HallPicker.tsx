@@ -9,7 +9,8 @@ interface HallPickerProps {
   setFieldValue: (field: string, value: any) => void;
 }
 
-const HallPicker: React.FC<HallPickerProps> = observer(({ halls, setFieldValue }) => {
+const HallPicker: React.FC<HallPickerProps> = observer(({ halls, setFieldValue }: HallPickerProps) => {
+  // console.log(halls);
   return (
     <div className={css.container}>
       <h3>Choose hall:</h3>

@@ -3,11 +3,16 @@ import IOrderEntity from '../../store/IOrderEntity.ts';
 import { OrdersVM } from '../../ViewModels/OrdersVM.ts';
 import css from './Order.module.css';
 import { untracked } from 'mobx';
+import { useEffect } from 'react';
 
 const Order = observer(({ order, vm }: { order: IOrderEntity; vm: OrdersVM }) => {
   const date = untracked(() => order.date);
   const hall = untracked(() => order.hallId);
   const seats = untracked(() => order.seats);
+
+  useEffect(() => {
+    vm.loadInfo(order.filmId);
+  }, []);
 
   return (
     <li className={css.item}>

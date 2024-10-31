@@ -1,4 +1,5 @@
 import css from './SeatsPicker.module.css';
+import clsx from 'clsx';
 
 import { observer } from 'mobx-react-lite';
 import { Field } from 'formik';
@@ -25,7 +26,6 @@ const SeatsPicker = observer(
 
     const handleSeatToggle = (seat: number): void => {
       toggleSeat(seat);
-
       setFieldValue('seats', [...chosenSeats]);
     };
 
@@ -34,6 +34,7 @@ const SeatsPicker = observer(
         <h3>Choose seats:</h3>
         <div className={css.toolbar}>
           {seats?.map((seat: number) => {
+            const seatIsChosen = isChosen(seat, hallId, Number(filmId));
             return (
               <div key={seat}>
                 <Field
@@ -41,19 +42,17 @@ const SeatsPicker = observer(
                   id={`seat-${seat}`}
                   checked={chosenSeats.includes(seat)}
                   onChange={(): void => {
-                    if (!isChosen(seat, hallId, Number(filmId))) {
+                    if (!seatIsChosen) {
                       handleSeatToggle(seat);
                     }
                   }}
+                  disabled={seatIsChosen}
                 />
                 <label
                   htmlFor={`seat-${seat}`}
-                  style={{
-                    cursor: isChosen(seat, hallId, Number(filmId)) ? 'not-allowed' : undefined,
-                    backgroundColor: isChosen(seat, hallId, Number(filmId)) ? 'lightgray' : undefined,
-                    color: isChosen(seat, hallId, Number(filmId)) ? 'darkgray' : undefined,
-                    borderColor: isChosen(seat, hallId, Number(filmId)) ? 'darkgray' : undefined,
-                  }}
+                  className={clsx({
+                    [css.disabled]: seatIsChosen,
+                  })}
                 >
                   Seat {seat}
                 </label>

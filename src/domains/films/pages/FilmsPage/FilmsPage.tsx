@@ -10,17 +10,15 @@ import IFilmEntity from '../../store/IFilmEntity.ts';
 import Film from '../../components/Film/Film.tsx';
 
 const FilmsPage = observer(() => {
-  const { filmsStore, ordersStore } = useStore();
+  const { filmsStore } = useStore();
 
   const vm = useMemo(() => {
-    return new FilmsPageVM(filmsStore, ordersStore);
+    return new FilmsPageVM(filmsStore);
   }, []);
 
-  //обьеденить
   useEffect((): void => {
     vm.init();
-    vm.loadWatchedFilms();
-  }, []);
+  }, [vm]);
 
   return (
     <div className={css.container}>
@@ -30,7 +28,11 @@ const FilmsPage = observer(() => {
       <ul className={css.list}>
         {vm.films.map((film: IFilmEntity) => {
           const key: number = untracked((): number => film.id);
-          return <Film film={film} key={key} isWatched={vm.isWatched(film.id)} />;
+          return (
+            <li key={key} className={css.item}>
+              <Film film={film} isWatched={vm.isWatched(film.id)} />
+            </li>
+          );
         })}
       </ul>
     </div>

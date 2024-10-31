@@ -1,30 +1,20 @@
-import { action, computed, makeObservable, observable } from 'mobx';
-import { FilmsServerRepo } from '../../../infrastructure/repos/FilmsServerRepo.ts';
-import { CinemasServerRepo } from '../../../infrastructure/repos/CinemasServerRepo.ts';
+import { action, computed, makeObservable } from 'mobx';
 import OrdersStore from '../store/OrdersStore.ts';
 import IOrderEntity from '../store/IOrderEntity.ts';
-import FilmsStore from '../../films/store/FilmsStore.ts';
-import CinemaStore from '../../cinema/store/CinemaStore.ts';
-import IFilmEntity from '../../films/store/IFilmEntity.ts';
-import ICinemaEntity from '../../cinema/store/ICinemaEntity.ts';
+import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 
 export class OrdersVM {
   private _ordersStore: OrdersStore;
-  private _filmsStore: FilmsStore;
-  private _cinemaStore: CinemaStore;
 
-  constructor(ordersStore: OrdersStore, filmsStore: FilmsStore, cinemaStore: CinemaStore) {
+  constructor(ordersStore: OrdersStore) {
     this._ordersStore = ordersStore;
-    this._filmsStore = filmsStore;
-    this._cinemaStore = cinemaStore;
     makeObservable(this, {
       orders: computed,
       totalOrders: computed,
       currentPage: computed,
       loadOrders: action,
+      addOrder: action,
       deleteOrder: action,
-      getFilmName: observable,
-      getCinemaAddress: observable,
     });
   }
 
@@ -41,37 +31,27 @@ export class OrdersVM {
   }
 
   async loadOrders(page: number): Promise<void> {
-    await this._ordersStore.loadOrders(page);
+    const { orders, total } = await OrdersServerRepo.loadOrders(page, this._ordersStore._pageSize);
+    this._ordersStore.setOrders(orders);
+    this._ordersStore.setTotalOrders(total);
+    this._ordersStore.setCurrentPage(page);
   }
 
-  deleteOrder(orderId: number): void {
-    this._ordersStore.deleteOrder(orderId);
+  async addOrder(order: IOrderEntity): Promise<void> {
+    await OrdersServerRepo.addOrder(order);
+    await this.loadOrders(this._ordersStore.currentPage);
   }
 
-  getFilmName(filmId: number): string {
-    const film: IFilmEntity | undefined = this._filmsStore.films.find(
-      (film: IFilmEntity): boolean => film.id === filmId
-    );
-    return film ? film.name : '';
+  async deleteOrder(orderId: number): Promise<void> {
+    await OrdersServerRepo.deleteOrder(orderId);
+    await this.loadOrders(this._ordersStore.currentPage);
   }
 
-  getCinemaAddress(cinemaId: number): string {
-    const cinema: ICinemaEntity | undefined = this._cinemaStore.cinemas.find(
-      (cinema: ICinemaEntity): boolean => cinema.id === cinemaId
-    );
-    return cinema ? cinema.address : '';
+  isLastPage() {
+    return !(this.currentPage * this._ordersStore._pageSize < this.totalOrders);
   }
 
-  async loadInfo(filmId: number): Promise<void> {
-    if (this._filmsStore.films.length === 0) {
-      FilmsServerRepo.loadFilms().then((films: IFilmEntity[]): void => {
-        this._filmsStore.setFilms(films);
-      });
-    }
-    if (this._cinemaStore.cinemas.length === 0) {
-      CinemasServerRepo.loadCinemas(filmId).then((cinemas: ICinemaEntity[]): void => {
-        this._cinemaStore.setCinemas(cinemas);
-      });
-    }
+  isFirstPage() {
+    return this.currentPage === 1;
   }
 }

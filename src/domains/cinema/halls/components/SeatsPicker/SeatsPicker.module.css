@@ -46,4 +46,18 @@
     margin-bottom: 30px;
 }
 
+.disabled {
+    cursor: not-allowed;
+    background-color: lightgray;
+    color: darkgray;
+    border-color: darkgray;
+}
+
+.disabled:hover, .disabled:focus {
+    cursor: not-allowed;
+    background-color: lightgray;
+    color: darkgray;
+    border-color: darkgray;
+}
+
 

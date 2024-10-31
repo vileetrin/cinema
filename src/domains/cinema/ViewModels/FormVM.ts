@@ -5,6 +5,7 @@ import { HallsServerRepo } from '../../../infrastructure/repos/HallsServerRepo.t
 import IHallEntity from '../halls/store/IHallEntity.ts';
 import OrdersStore from '../../order/store/OrdersStore.ts';
 import IOrderEntity from '../../order/store/IOrderEntity.ts';
+import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 
 export class FormVM {
   private _hallsStore: HallsStore;
@@ -73,7 +74,7 @@ export class FormVM {
   }
 
   async makeOrder(order: IOrderEntity): Promise<void> {
-    await this._ordersStore.addOrder(order);
+    await OrdersServerRepo.addOrder(order);
   }
 
   setFormData(values: object): void {

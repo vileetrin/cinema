@@ -20,28 +20,6 @@
     justify-content: center;
 }
 
-.loadMoreBtn {
-    margin: 20px 0;
-    padding: 10px 20px;
-    background-color: #ff3a3a;
-    color: white;
-    border: 1px solid #ff3a3a;
-    border-radius: 20px;
-    cursor: pointer;
-    outline: none;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.loadMoreBtn:hover {
-    background-color: #ffffff;
-    color: #ff3a3a;
-    outline: none;
-}
-
-.loadMoreBtn:focus {
-    outline: none;
-}
-
 .btnContainer {
     display: flex;
     flex-direction: row;

@@ -1,10 +1,8 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 import IOrderEntity from './IOrderEntity.ts';
-import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 
 class OrdersStore {
   _orders: IOrderEntity[] = [];
-  private _watchedFilms: number[] = [];
   _totalOrders: number = 0;
   _currentPage: number = 1;
   _pageSize: number = 5;
@@ -15,9 +13,9 @@ class OrdersStore {
       _totalOrders: observable,
       _currentPage: observable,
       orders: computed,
-      loadOrders: action,
-      addOrder: action,
-      deleteOrder: action,
+      setOrders: action,
+      setTotalOrders: action,
+      setCurrentPage: action,
     });
   }
 
@@ -33,30 +31,16 @@ class OrdersStore {
     return this._currentPage;
   }
 
-  get watchedFilms(): number[] {
-    return this._watchedFilms;
+  setOrders(orders: IOrderEntity[]): void {
+    this._orders = orders;
   }
 
-  async loadOrders(page: number): Promise<void> {
-    const { orders, total } = await OrdersServerRepo.loadOrders(page, this._pageSize);
-    this._orders = orders;
-    this._currentPage = page;
+  setTotalOrders(total: number): void {
     this._totalOrders = total;
   }
 
-  async addOrder(order: IOrderEntity): Promise<void> {
-    await OrdersServerRepo.addOrder(order);
-    await this.loadOrders(this._currentPage);
-  }
-
-  async deleteOrder(orderId: number): Promise<void> {
-    await OrdersServerRepo.deleteOrder(orderId);
-    await this.loadOrders(this._currentPage);
-  }
-
-  async setWatchedFilms(): Promise<void> {
-    const { watchedFilms } = await OrdersServerRepo.watchedFilms();
-    this._watchedFilms = watchedFilms;
+  setCurrentPage(page: number): void {
+    this._currentPage = page;
   }
 }
 

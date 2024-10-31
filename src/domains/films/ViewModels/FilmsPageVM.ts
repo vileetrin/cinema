@@ -1,29 +1,29 @@
-import { computed, makeObservable, observable } from 'mobx';
-
+import { action, computed, makeObservable, observable } from 'mobx';
 import { FilmsServerRepo } from '../../../infrastructure/repos/FilmsServerRepo.ts';
 import IFilmEntity from '../store/IFilmEntity.ts';
 import FilmsStore from '../store/FilmsStore.ts';
-import OrdersStore from '../../order/store/OrdersStore.ts';
 
 export class FilmsPageVM {
   private _filmsStore: FilmsStore;
-  private _ordersStore: OrdersStore;
+  _watchedFilmIds: number[] = [];
 
-  constructor(filmsStore: FilmsStore, ordersStore: OrdersStore) {
+  constructor(filmsStore: FilmsStore) {
     this._filmsStore = filmsStore;
-    this._ordersStore = ordersStore;
     makeObservable(this, {
-      init: observable,
+      init: action,
       films: computed,
-      isWatched: observable,
+      _watchedFilmIds: observable,
+      setWatchedFilmIds: action,
     });
   }
 
-  public init(): void {
+  public async init(): Promise<void> {
     if (this.films.length === 0) {
-      FilmsServerRepo.loadFilms().then((films: IFilmEntity[]): void => {
+      await FilmsServerRepo.loadFilms().then((films: IFilmEntity[]): void => {
         this._filmsStore.setFilms(films);
       });
+
+      this._watchedFilmIds = await FilmsServerRepo.fetchWatchedFilmIds();
     }
   }
 
@@ -31,15 +31,11 @@ export class FilmsPageVM {
     return this._filmsStore.films;
   }
 
-  isWatched(filmId: number): boolean {
-    return !!this.getWatchedFilms().find((film: number): boolean => film === filmId);
+  get isWatched(): (filmId: number) => boolean {
+    return (filmId: number) => this._watchedFilmIds.includes(filmId);
   }
 
-  getWatchedFilms(): number[] {
-    return this._ordersStore.watchedFilms;
-  }
-
-  loadWatchedFilms(): void {
-    this._ordersStore.setWatchedFilms();
+  setWatchedFilmIds(ids: number[]) {
+    this._watchedFilmIds = ids;
   }
 }

@@ -28,8 +28,6 @@ const BuyTicketsForm = observer(() => {
 
   const vm = useMemo(() => new FormVM(hallsStore, ordersStore), [hallsStore, ordersStore]);
 
-  console.log('FORM DATA ', vm.formData);
-
   const handleNext = (values: FormValues): void => {
     vm.setFormData(values);
     setStep((prevStep: number): number => prevStep + 1);

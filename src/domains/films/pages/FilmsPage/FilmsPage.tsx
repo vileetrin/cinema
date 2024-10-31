@@ -16,6 +16,7 @@ const FilmsPage = observer(() => {
     return new FilmsPageVM(filmsStore, ordersStore);
   }, []);
 
+  //обьеденить
   useEffect((): void => {
     vm.init();
     vm.loadWatchedFilms();

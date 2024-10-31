@@ -1,16 +1,18 @@
-import { observer } from 'mobx-react-lite';
-import IOrderEntity from '../../store/IOrderEntity.ts';
-import { OrdersVM } from '../../ViewModels/OrdersVM.ts';
 import css from './Order.module.css';
+
+import { observer } from 'mobx-react-lite';
 import { untracked } from 'mobx';
 import { useEffect } from 'react';
 
-const Order = observer(({ order, vm }: { order: IOrderEntity; vm: OrdersVM }) => {
-  const date = untracked(() => order.date.toLocaleString());
-  const hall = untracked(() => order.hallId);
-  const seats = untracked(() => order.seats);
+import IOrderEntity from '../../store/IOrderEntity.ts';
+import { OrdersVM } from '../../ViewModels/OrdersVM.ts';
 
-  useEffect(() => {
+const Order = observer(({ order, vm }: { order: IOrderEntity; vm: OrdersVM }) => {
+  const date: string = untracked((): string => order.date.toLocaleString());
+  const hall: number = untracked((): number => order.hallId);
+  const seats: number[] = untracked((): number[] => order.seats);
+
+  useEffect((): void => {
     vm.loadInfo(order.filmId);
   }, []);
 
@@ -38,7 +40,7 @@ const Order = observer(({ order, vm }: { order: IOrderEntity; vm: OrdersVM }) =>
           <p>{seats.join(', ')}</p>
         </div>
       </div>
-      <button type="button" onClick={() => vm.deleteOrder(order.id)} className={css.btn}>
+      <button type="button" onClick={(): void => vm.deleteOrder(order.id)} className={css.btn}>
         Delete
       </button>
     </li>

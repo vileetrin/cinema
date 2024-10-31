@@ -1,7 +1,9 @@
-import { observer } from 'mobx-react-lite';
-import IFilmEntity from '../../store/IFilmEntity.ts';
 import css from './Film.module.css';
+
+import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
+
+import IFilmEntity from '../../store/IFilmEntity.ts';
 
 const Film = observer(({ film, isWatched }: { film: IFilmEntity; isWatched: boolean }) => {
   return (

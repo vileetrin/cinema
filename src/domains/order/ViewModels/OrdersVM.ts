@@ -48,17 +48,21 @@ export class OrdersVM {
     this._ordersStore.deleteOrder(orderId);
   }
 
-  getFilmName(filmId: number) {
-    const film = this._filmsStore.films.find(film => film.id === filmId);
+  getFilmName(filmId: number): string {
+    const film: IFilmEntity | undefined = this._filmsStore.films.find(
+      (film: IFilmEntity): boolean => film.id === filmId
+    );
     return film ? film.name : '';
   }
 
-  getCinemaAddress(cinemaId: number) {
-    const cinema = this._cinemaStore.cinemas.find(cinema => cinema.id === cinemaId);
+  getCinemaAddress(cinemaId: number): string {
+    const cinema: ICinemaEntity | undefined = this._cinemaStore.cinemas.find(
+      (cinema: ICinemaEntity): boolean => cinema.id === cinemaId
+    );
     return cinema ? cinema.address : '';
   }
 
-  async loadInfo(filmId: number) {
+  async loadInfo(filmId: number): Promise<void> {
     if (this._filmsStore.films.length === 0) {
       FilmsServerRepo.loadFilms().then((films: IFilmEntity[]): void => {
         this._filmsStore.setFilms(films);

@@ -4,6 +4,7 @@ import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts'
 
 class OrdersStore {
   _orders: IOrderEntity[] = [];
+  private _watchedFilms: number[] = [];
   _totalOrders: number = 0;
   _currentPage: number = 1;
   _pageSize: number = 5;
@@ -32,15 +33,14 @@ class OrdersStore {
     return this._currentPage;
   }
 
+  get watchedFilms(): number[] {
+    return this._watchedFilms;
+  }
+
   async loadOrders(page: number): Promise<void> {
     const { orders, total } = await OrdersServerRepo.loadOrders(page, this._pageSize);
-    if (page === 1) {
-      this._orders = orders;
-      this._currentPage = page;
-    } else {
-      this._orders = [...this.orders, ...orders];
-      this._currentPage += 1;
-    }
+    this._orders = orders;
+    this._currentPage = page;
     this._totalOrders = total;
   }
 
@@ -51,9 +51,12 @@ class OrdersStore {
 
   async deleteOrder(orderId: number): Promise<void> {
     await OrdersServerRepo.deleteOrder(orderId);
-    console.log('CURRENT PAGE: ', this._currentPage);
-
     await this.loadOrders(this._currentPage);
+  }
+
+  async setWatchedFilms(): Promise<void> {
+    const { watchedFilms } = await OrdersServerRepo.watchedFilms();
+    this._watchedFilms = watchedFilms;
   }
 }
 

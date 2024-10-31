@@ -1,5 +1,5 @@
-import ICinemaEntity from './ICinemaEntity.ts';
 import { action, computed, makeObservable, observable } from 'mobx';
+import ICinemaEntity from './ICinemaEntity.ts';
 
 class CinemaStore {
   _cinemas: ICinemaEntity[] = [];
@@ -12,7 +12,7 @@ class CinemaStore {
     });
   }
 
-  get cinemas() {
+  get cinemas(): ICinemaEntity[] {
     return this._cinemas;
   }
 

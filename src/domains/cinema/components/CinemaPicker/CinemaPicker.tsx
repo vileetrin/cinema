@@ -1,13 +1,15 @@
+import css from './CinemaPicker.module.css';
+
 import { Field } from 'formik';
 import { observer } from 'mobx-react-lite';
-import { CinemaVM } from '../../ViewModels/CinemaVM.ts';
-import { useStore } from '../../../../infrastructure/StoreContext.ts';
 import { useEffect, useMemo } from 'react';
-import css from './CinemaPicker.module.css';
+
+import { CinemaVM } from '../../ViewModels/CinemaVM.ts';
 import ICinemaEntity from '../../store/ICinemaEntity.ts';
+import { useStore } from '../../../../infrastructure/StoreContext.ts';
 
 interface CinemaPickerProps {
-  setFieldValue: (field: string, value: any) => void;
+  setFieldValue: (field: string, value: number) => void;
   filmId: string | undefined;
 }
 
@@ -22,6 +24,11 @@ const CinemaPicker = observer(({ setFieldValue, filmId }: CinemaPickerProps) => 
     vm.init(Number(filmId));
   }, []);
 
+  const handleClick = (cinemaId: number): void => {
+    setFieldValue('cinema', cinemaId);
+    console.log('CINEMA IN PICKER', cinemaId);
+  };
+
   return (
     <div className={css.container}>
       <h3>Choose cinema:</h3>
@@ -33,7 +40,7 @@ const CinemaPicker = observer(({ setFieldValue, filmId }: CinemaPickerProps) => 
               name="cinema"
               value={cinema.id.toString()}
               id={`cinema - ${cinema.id}`}
-              onClick={() => setFieldValue('cinema', cinema.id)}
+              onClick={(): void => handleClick(cinema.id)}
             />
             <label key={cinema.id} htmlFor={`cinema - ${cinema.id}`}>
               {cinema.address}

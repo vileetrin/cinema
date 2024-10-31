@@ -1,7 +1,8 @@
+import { computed, makeObservable, observable } from 'mobx';
+
 import CinemaStore from '../store/CinemaStore.ts';
 import { CinemasServerRepo } from '../../../infrastructure/repos/CinemasServerRepo.ts';
 import ICinemaEntity from '../store/ICinemaEntity.ts';
-import { computed, makeObservable, observable } from 'mobx';
 
 export class CinemaVM {
   private _cinemaStore: CinemaStore;

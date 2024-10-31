@@ -3,4 +3,4 @@ import RootStore from './RootStore.ts';
 
 const storeContext = createContext(new RootStore());
 
-export const useStore = () => useContext(storeContext);
+export const useStore = (): RootStore => useContext(storeContext);

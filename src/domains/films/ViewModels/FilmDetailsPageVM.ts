@@ -1,33 +1,31 @@
-import FilmsStore from "../store/FilmsStore.ts";
-import {action, computed, makeObservable, observable} from "mobx";
-import IFilmEntity from "../store/IFilmEntity.ts";
-
+import { action, computed, makeObservable, observable } from 'mobx';
+import IFilmEntity from '../store/IFilmEntity.ts';
+import FilmsStore from '../store/FilmsStore.ts';
 
 export class FilmDetailsPageVM {
-    private _filmsStore: FilmsStore;
-    _film: IFilmEntity | undefined = undefined;
+  private _filmsStore: FilmsStore;
+  _film: IFilmEntity | undefined = undefined;
 
-    constructor(filmsStore: FilmsStore) {
-        this._filmsStore = filmsStore;
-        makeObservable(this, {
-            _film: observable,
-            film: computed,
-            setFilm: action,
-            getFilmById: action,
-        });
-    }
+  constructor(filmsStore: FilmsStore) {
+    this._filmsStore = filmsStore;
+    makeObservable(this, {
+      _film: observable,
+      film: computed,
+      setFilm: action,
+      getFilmById: action,
+    });
+  }
 
-    setFilm(film: IFilmEntity | undefined) {
-        this._film = film || undefined;
-    }
+  setFilm(film: IFilmEntity | undefined): void {
+    this._film = film || undefined;
+  }
 
-    getFilmById(filmId: number) {
-        const film = this._filmsStore.getFilmById(filmId);
-        this.setFilm(film);
-    }
+  getFilmById(filmId: number): void {
+    const film: IFilmEntity | undefined = this._filmsStore.getFilmById(filmId);
+    this.setFilm(film);
+  }
 
-    get film(){
-        return this._film
-    }
+  get film(): IFilmEntity | undefined {
+    return this._film;
+  }
 }
-

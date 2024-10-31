@@ -27,7 +27,7 @@ export class HallsServerRepo {
 
     const filteredHalls: IHallEntity[] = halls
       .filter(
-        (hall: IHallData) =>
+        (hall: IHallData): boolean =>
           (hall.cinemaId || hall.cinema) === cinemaId && (hall.filmsId || hall.filmIds || []).includes(filmId)
       )
       .map(this.transformToIHallEntity);

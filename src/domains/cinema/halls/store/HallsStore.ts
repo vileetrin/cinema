@@ -37,7 +37,7 @@ class HallsStore {
 
   deselectSeat(hallId: number, seat: number): void {
     if (this.selectedSeats[hallId]) {
-      this.selectedSeats[hallId] = this.selectedSeats[hallId].filter(s => s !== seat);
+      this.selectedSeats[hallId] = this.selectedSeats[hallId].filter((s: number): boolean => s !== seat);
     }
   }
 
@@ -49,7 +49,7 @@ class HallsStore {
     }
   }
 
-  getSelectedSeats(hallId: number) {
+  getSelectedSeats(hallId: number): number[] {
     return this.selectedSeats[hallId] || [];
   }
 }

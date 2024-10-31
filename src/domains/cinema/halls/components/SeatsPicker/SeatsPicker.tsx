@@ -1,7 +1,8 @@
-import { observer } from 'mobx-react-lite';
 import css from './SeatsPicker.module.css';
-import IOrderEntity from '../../../../order/store/IOrderEntity.ts';
+
+import { observer } from 'mobx-react-lite';
 import { Field } from 'formik';
+import IOrderEntity from '../../../../order/store/IOrderEntity.ts';
 
 interface SeatsPickerProps {
   seats: number[] | undefined;
@@ -39,7 +40,7 @@ const SeatsPicker = observer(
                   type="checkbox"
                   id={`seat-${seat}`}
                   checked={chosenSeats.includes(seat)}
-                  onChange={() => {
+                  onChange={(): void => {
                     if (!isChosen(seat, hallId, Number(filmId))) {
                       handleSeatToggle(seat);
                     }

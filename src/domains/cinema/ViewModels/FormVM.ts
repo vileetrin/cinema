@@ -1,11 +1,10 @@
+import { action, computed, makeObservable, observable } from 'mobx';
+
 import HallsStore from '../halls/store/HallsStore.ts';
 import { HallsServerRepo } from '../../../infrastructure/repos/HallsServerRepo.ts';
 import IHallEntity from '../halls/store/IHallEntity.ts';
 import OrdersStore from '../../order/store/OrdersStore.ts';
 import IOrderEntity from '../../order/store/IOrderEntity.ts';
-import { action, computed, makeObservable, observable } from 'mobx';
-
-import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 
 export class FormVM {
   private _hallsStore: HallsStore;
@@ -24,7 +23,6 @@ export class FormVM {
       halls: computed,
       orders: computed,
       getHallSeats: observable,
-      // getSeatsArray: observable,
       makeOrder: action,
       toggleSeat: action,
       chosenSeats: observable,
@@ -39,33 +37,27 @@ export class FormVM {
   }
 
   get halls(): IHallEntity[] {
-    // console.log(this._hallsStore.halls);
     return this._hallsStore.halls;
   }
 
-  get orders() {
+  get orders(): IOrderEntity[] {
     return this._ordersStore.orders;
   }
 
   getHallSeats(hallId: number): number | undefined {
-    const hall = this.halls.find(hall => hallId === hall.id);
+    const hall: IHallEntity | undefined = this.halls.find((hall: IHallEntity): boolean => hallId === hall.id);
     return hall ? hall.seatsQuantity : undefined;
   }
 
   getSeatsArray(hallId: number): number[] {
-    const seatsQuantity = this.getHallSeats(hallId);
+    const seatsQuantity: number | undefined = this.getHallSeats(hallId);
     const seats: number[] = [];
     if (seatsQuantity) {
-      for (let i = 1; i <= seatsQuantity; i++) {
+      for (let i: number = 1; i <= seatsQuantity; i++) {
         seats.push(i);
       }
     }
     return seats;
-  }
-
-  async makeOrder(order: IOrderEntity): Promise<void> {
-    await OrdersServerRepo.addOrder(order);
-    // await this._ordersStore.addOrder(order);
   }
 
   chosenSeats(hallId: number): number[] {
@@ -80,7 +72,11 @@ export class FormVM {
     this._hallsStore.selectedSeats = [];
   }
 
-  setFormData(values: object) {
+  async makeOrder(order: IOrderEntity): Promise<void> {
+    await this._ordersStore.addOrder(order);
+  }
+
+  setFormData(values: object): void {
     this.formData = { ...this.formData, ...values };
   }
 }

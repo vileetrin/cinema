@@ -28,10 +28,24 @@
     border: 1px solid #ff3a3a;
     border-radius: 20px;
     cursor: pointer;
+    outline: none;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .loadMoreBtn:hover {
     background-color: #ffffff;
     color: #ff3a3a;
+    outline: none;
+}
+
+.loadMoreBtn:focus {
+    outline: none;
+}
+
+.btnContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
 }

@@ -1,11 +1,13 @@
-import { observer } from 'mobx-react-lite';
-import { useStore } from '../../../../infrastructure/StoreContext.ts';
-import { useEffect, useMemo } from 'react';
-import { FilmsPageVM } from '../../ViewModels/FilmsPageVM.ts';
 import css from './FilmsPage.module.css';
+
+import { observer } from 'mobx-react-lite';
+import { untracked } from 'mobx';
+import { useEffect, useMemo } from 'react';
+import { useStore } from '../../../../infrastructure/StoreContext.ts';
+
+import { FilmsPageVM } from '../../ViewModels/FilmsPageVM.ts';
 import IFilmEntity from '../../store/IFilmEntity.ts';
 import Film from '../../components/Film/Film.tsx';
-import { untracked } from 'mobx';
 
 const FilmsPage = observer(() => {
   const { filmsStore, ordersStore } = useStore();
@@ -14,8 +16,9 @@ const FilmsPage = observer(() => {
     return new FilmsPageVM(filmsStore, ordersStore);
   }, []);
 
-  useEffect(() => {
+  useEffect((): void => {
     vm.init();
+    vm.loadWatchedFilms();
   }, []);
 
   return (

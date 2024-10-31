@@ -15,8 +15,8 @@ export class CinemasServerRepo {
       { id: 3, address: '789 Oak Ave, Uptown', filmsId: [1, 3, 4, 5, 7, 8, 9] },
     ];
 
-    const filteredCinemas = cinemas
-      .filter(cinema => (cinema.filmsId || cinema.filmIds || []).includes(filmId))
+    const filteredCinemas: ICinemaEntity[] = cinemas
+      .filter((cinema: ICinemaData): boolean => (cinema.filmsId || cinema.filmIds || []).includes(filmId))
       .map(this.transformToICinemaEntity);
 
     return Promise.resolve(filteredCinemas);

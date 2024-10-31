@@ -1,6 +1,7 @@
+import { computed, makeObservable, observable } from 'mobx';
+
 import { FilmsServerRepo } from '../../../infrastructure/repos/FilmsServerRepo.ts';
 import IFilmEntity from '../store/IFilmEntity.ts';
-import { computed, makeObservable, observable } from 'mobx';
 import FilmsStore from '../store/FilmsStore.ts';
 import OrdersStore from '../../order/store/OrdersStore.ts';
 
@@ -14,6 +15,7 @@ export class FilmsPageVM {
     makeObservable(this, {
       init: observable,
       films: computed,
+      isWatched: observable,
     });
   }
 
@@ -29,15 +31,15 @@ export class FilmsPageVM {
     return this._filmsStore.films;
   }
 
-  isWatched(filmId: number) {
-    return !!this._ordersStore.orders.find(order => order.filmId === filmId);
+  isWatched(filmId: number): boolean {
+    return !!this.getWatchedFilms().find((film: number): boolean => film === filmId);
   }
 
-  // async loadInfo() {
-  //   if (this._ordersStore.orders.length === 0) {
-  //     OrdersServerRepo.loadOrders().then((films: IFilmEntity[]): void => {
-  //       this._filmsStore.setFilms(films);
-  //     });
-  //   }
-  // }
+  getWatchedFilms(): number[] {
+    return this._ordersStore.watchedFilms;
+  }
+
+  loadWatchedFilms(): void {
+    this._ordersStore.setWatchedFilms();
+  }
 }

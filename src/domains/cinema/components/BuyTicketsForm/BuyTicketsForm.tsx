@@ -42,7 +42,7 @@ const BuyTicketsForm = observer(() => {
 
     const order = {
       id: Math.random() * 200,
-      cinemaId: values.cinema,
+      cinemaId: Number(values.cinema),
       filmId: Number(filmId),
       hallId: values.hall,
       seats: values.seats,

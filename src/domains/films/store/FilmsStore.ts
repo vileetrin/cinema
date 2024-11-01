@@ -1,30 +1,24 @@
 import { action, computed, makeObservable, observable } from 'mobx';
-import IFilmEntity from './IFilmEntity.ts';
+import IFilmResponse from './IFilmResponse.ts';
 
 class FilmsStore {
-    _films: IFilmEntity[] = [];
+  _films: Array<IFilmResponse> = [];
 
-    constructor() {
-        makeObservable(this, {
-            _films: observable,
-            films: computed,
-            setFilms: action,
-            getFilmById: observable,
-        });
-    }
+  constructor() {
+    makeObservable(this, {
+      _films: observable,
+      films: computed,
+      setFilms: action,
+    });
+  }
 
-    get films(): Array<IFilmEntity> {
-        return this._films;
-    }
+  get films(): Array<IFilmResponse> {
+    return this._films;
+  }
 
-    setFilms(films: Array<IFilmEntity>): void {
-        this._films = films;
-
-    }
-
-    getFilmById(filmId: number): IFilmEntity | undefined {
-        return this.films.find((film: IFilmEntity): boolean => film.id === filmId);
-    }
+  setFilms(films: Array<IFilmResponse>): void {
+    this._films = films;
+  }
 }
 
 export default FilmsStore;

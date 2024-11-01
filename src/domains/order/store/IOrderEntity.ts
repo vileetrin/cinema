@@ -5,6 +5,4 @@ export default interface IOrderEntity {
   hallId: number;
   seats: number[];
   date: Date;
-  filmName?: string;
-  cinemaAddress?: string;
 }

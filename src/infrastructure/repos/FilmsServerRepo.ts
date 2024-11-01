@@ -1,7 +1,7 @@
 import MockServer from './MockServer';
-import IFilmEntity from '../../domains/films/store/IFilmEntity.ts';
+import IFilmResponse from '../../domains/films/store/IFilmResponse.ts';
 
 export class FilmsServerRepo {
-  static loadFilms = (): Promise<IFilmEntity[]> => MockServer.fetchFilms();
-  static fetchWatchedFilmIds = (): Promise<number[]> => MockServer.fetchWatchedFilmIds();
+  static loadFilms = (): Promise<Array<IFilmResponse>> => MockServer.fetchFilms();
+  static fetchFilm = (filmId: number): Promise<IFilmResponse> => MockServer.fetchFilm(filmId);
 }

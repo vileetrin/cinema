@@ -2,6 +2,8 @@ import IOrderEntity from '../../domains/order/store/IOrderEntity.ts';
 import IHallEntity from '../../domains/cinema/halls/store/IHallEntity.ts';
 import IFilmEntity from '../../domains/films/store/IFilmEntity.ts';
 import ICinemaEntity from '../../domains/cinema/store/ICinemaEntity.ts';
+import IFilmResponse from '../../domains/films/store/IFilmResponse.ts';
+import IOrderResponse from '../../domains/order/store/IOrderResponse.ts';
 
 class MockServer {
   private static orders: IOrderEntity[] = [
@@ -105,11 +107,34 @@ class MockServer {
     { id: 3, address: '789 Oak Ave, Uptown', filmsId: [1, 3, 4, 5, 7, 8, 9] },
   ];
 
-  static async fetchOrders(page: number, pageSize: number): Promise<{ orders: IOrderEntity[]; total: number }> {
-    const sortedOrders = this.orders.slice().sort((a, b) => b.date.getTime() - a.date.getTime());
-    const startIndex = (page - 1) * pageSize;
-    const paginatedOrders = sortedOrders.slice(startIndex, startIndex + pageSize);
-    return { orders: paginatedOrders, total: this.orders.length };
+  static async fetchOrders(page: number, pageSize: number) {
+    const sortedOrders: IOrderEntity[] = this.orders
+      .slice()
+      .sort((a: IOrderEntity, b: IOrderEntity): number => b.date.getTime() - a.date.getTime());
+    const startIndex: number = (page - 1) * pageSize;
+    const paginatedOrders: IOrderEntity[] = sortedOrders.slice(startIndex, startIndex + pageSize);
+
+    const filmName = (filmId: number): string | undefined => {
+      const film: IFilmEntity | undefined = this.films.find((film: IFilmEntity): boolean => film.id === filmId);
+      return film ? film.name : undefined;
+    };
+
+    const cinemaAddress = (cinemaId: number): string | undefined => {
+      const cinema: ICinemaEntity | undefined = this.cinemas.find(
+        (cinema: ICinemaEntity): boolean => cinema.id === cinemaId
+      );
+      console.log(cinema?.address);
+      return cinema ? cinema.address : undefined;
+    };
+
+    const detailedOrders: IOrderResponse[] = paginatedOrders.map(
+      (order: IOrderEntity): IOrderResponse => ({
+        order,
+        cinemaAddress: cinemaAddress(order.cinemaId),
+        filmName: filmName(order.filmId),
+      })
+    );
+    return { orders: detailedOrders, total: this.orders.length };
   }
 
   static async addOrder(order: IOrderEntity): Promise<void> {
@@ -117,24 +142,40 @@ class MockServer {
   }
 
   static async deleteOrder(orderId: number): Promise<void> {
-    this.orders = this.orders.filter(order => order.id !== orderId);
+    this.orders = this.orders.filter((order: IOrderEntity): boolean => order.id !== orderId);
   }
 
   static async fetchHalls(cinemaId: number, filmId: number): Promise<IHallEntity[]> {
-    return this.halls.filter(hall => hall.cinemaId === cinemaId && hall.filmsId.includes(filmId));
+    return this.halls.filter(
+      (hall: IHallEntity): boolean => hall.cinemaId === cinemaId && hall.filmsId.includes(filmId)
+    );
   }
 
-  static async fetchFilms(): Promise<IFilmEntity[]> {
-    return this.films;
+  static async fetchFilms(): Promise<Array<IFilmResponse>> {
+    const watchedFilmsIds: number[] = await this.fetchWatchedFilmIds();
+    return this.films.map((film: IFilmEntity) => ({
+      film,
+      isWatched: watchedFilmsIds.includes(film.id),
+    }));
+  }
+
+  static async fetchFilm(filmId: number): Promise<IFilmResponse> {
+    const watchedFilmsIds: number[] = await this.fetchWatchedFilmIds();
+    const foundFilm: IFilmEntity | undefined = this.films.find((film: IFilmEntity): boolean => film.id === filmId);
+    return {
+      film: foundFilm,
+      isWatched: watchedFilmsIds.includes(filmId),
+    };
   }
 
   static async fetchWatchedFilmIds(): Promise<number[]> {
-    return this.orders.map(order => order.filmId);
+    const filmIds = new Set(this.orders.map((order: IOrderEntity): number => order.filmId));
+    return Array.from(filmIds);
   }
 
   static async fetchCinemas(filmId?: number): Promise<ICinemaEntity[]> {
     if (filmId !== undefined) {
-      return this.cinemas.filter(cinema => cinema.filmsId.includes(filmId));
+      return this.cinemas.filter((cinema: ICinemaEntity): boolean => cinema.filmsId.includes(filmId));
     }
     return this.cinemas;
   }

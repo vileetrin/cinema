@@ -6,6 +6,7 @@ import { OrdersVM } from '../../ViewModels/OrdersVM.ts';
 import Order from '../../components/Order/Order.tsx';
 import PreviousButton from '../../components/Buttons/PreviousButton';
 import NextButton from '../../components/Buttons/NextButton.tsx';
+import IOrderResponse from '../../store/IOrderResponse.ts';
 
 const OrdersHistoryPage = observer(() => {
   const { ordersStore } = useStore();
@@ -21,8 +22,8 @@ const OrdersHistoryPage = observer(() => {
         <span className={css.partTitle}>Orders</span> History
       </h1>
       <ul className={css.list}>
-        {vm.orders.map(order => (
-          <Order order={order} vm={vm} key={order.id} />
+        {vm.orders.map((order: IOrderResponse) => (
+          <Order order={order} vm={vm} key={order.order.id} />
         ))}
       </ul>
 

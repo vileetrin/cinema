@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import { observer } from 'mobx-react-lite';
 import { Field } from 'formik';
-import IOrderEntity from '../../../../order/store/IOrderEntity.ts';
+import IOrderResponse from '../../../../order/store/IOrderResponse.ts';
 
 interface SeatsPickerProps {
   seats: number[] | undefined;
@@ -11,7 +11,7 @@ interface SeatsPickerProps {
   chosenSeats: number[];
   hallId: number;
   filmId: string | undefined;
-  orders: IOrderEntity[];
+  orders: IOrderResponse[];
   setFieldValue: (field: string, value: number[]) => void;
 }
 
@@ -19,8 +19,8 @@ const SeatsPicker = observer(
   ({ seats, toggleSeat, chosenSeats, orders, hallId, filmId, setFieldValue }: SeatsPickerProps) => {
     const isChosen = (seat: number, hallId: number, filmId: number): boolean => {
       return !!orders.find(
-        (order: IOrderEntity): boolean =>
-          order.seats.includes(seat) && order.filmId === filmId && order.hallId === hallId
+        (order: IOrderResponse): boolean =>
+          order.order.seats.includes(seat) && order.order.filmId === filmId && order.order.hallId === hallId
       );
     };
 

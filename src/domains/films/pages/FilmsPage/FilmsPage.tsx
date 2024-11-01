@@ -11,7 +11,6 @@ import Film from '../../components/Film/Film.tsx';
 
 const FilmsPage = observer(() => {
   const { filmsStore } = useStore();
-
   const vm = useMemo(() => {
     return new FilmsPageVM(filmsStore);
   }, []);
@@ -26,11 +25,11 @@ const FilmsPage = observer(() => {
         <span className={css.part}>Films</span> List
       </h1>
       <ul className={css.list}>
-        {vm.films.map((film: IFilmEntity) => {
-          const key: number = untracked((): number => film.id);
+        {vm.films.map((film: { film: IFilmEntity; isWatched: boolean }) => {
+          const key: number = untracked((): number => film.film.id);
           return (
             <li key={key} className={css.item}>
-              <Film film={film} isWatched={vm.isWatched(film.id)} />
+              <Film film={film.film} isWatched={film.isWatched} />
             </li>
           );
         })}

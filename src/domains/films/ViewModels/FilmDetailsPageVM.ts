@@ -1,31 +1,28 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 import IFilmEntity from '../store/IFilmEntity.ts';
-import FilmsStore from '../store/FilmsStore.ts';
+import { FilmsServerRepo } from '../../../infrastructure/repos/FilmsServerRepo.ts';
 
 export class FilmDetailsPageVM {
-  private _filmsStore: FilmsStore;
-  _film: IFilmEntity | undefined = undefined;
+  _film: { film: IFilmEntity | undefined; isWatched: boolean } = { film: undefined, isWatched: false };
 
-  constructor(filmsStore: FilmsStore) {
-    this._filmsStore = filmsStore;
+  constructor() {
     makeObservable(this, {
       _film: observable,
       film: computed,
       setFilm: action,
-      getFilmById: action,
+      initFilm: action,
     });
   }
 
-  setFilm(film: IFilmEntity | undefined): void {
+  setFilm(film: { film: IFilmEntity | undefined; isWatched: boolean }): void {
     this._film = film || undefined;
   }
 
-  getFilmById(filmId: number): void {
-    const film: IFilmEntity | undefined = this._filmsStore.getFilmById(filmId);
-    this.setFilm(film);
+  get film(): { film: IFilmEntity | undefined; isWatched: boolean } {
+    return this._film;
   }
 
-  get film(): IFilmEntity | undefined {
-    return this._film;
+  async initFilm(filmId: number): Promise<void> {
+    await FilmsServerRepo.fetchFilm(filmId).then(res => this.setFilm(res));
   }
 }

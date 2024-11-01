@@ -2,6 +2,7 @@ import { action, computed, makeObservable } from 'mobx';
 import OrdersStore from '../store/OrdersStore.ts';
 import IOrderEntity from '../store/IOrderEntity.ts';
 import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
+import IOrderResponse from '../store/IOrderResponse.ts';
 
 export class OrdersVM {
   private _ordersStore: OrdersStore;
@@ -18,7 +19,7 @@ export class OrdersVM {
     });
   }
 
-  get orders(): IOrderEntity[] {
+  get orders(): IOrderResponse[] {
     return this._ordersStore.orders;
   }
 

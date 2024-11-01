@@ -26,7 +26,6 @@ const CinemaPicker = observer(({ setFieldValue, filmId }: CinemaPickerProps) => 
 
   const handleClick = (cinemaId: number): void => {
     setFieldValue('cinema', cinemaId);
-    console.log('CINEMA IN PICKER', cinemaId);
   };
 
   return (

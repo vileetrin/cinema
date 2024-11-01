@@ -1,8 +1,8 @@
 import { action, computed, makeObservable, observable } from 'mobx';
-import IOrderEntity from './IOrderEntity.ts';
+import IOrderResponse from './IOrderResponse.ts';
 
 class OrdersStore {
-  _orders: IOrderEntity[] = [];
+  _orders: Array<IOrderResponse> = [];
   _totalOrders: number = 0;
   _currentPage: number = 1;
   _pageSize: number = 5;
@@ -19,7 +19,7 @@ class OrdersStore {
     });
   }
 
-  get orders(): IOrderEntity[] {
+  get orders(): IOrderResponse[] {
     return this._orders;
   }
 
@@ -31,7 +31,7 @@ class OrdersStore {
     return this._currentPage;
   }
 
-  setOrders(orders: IOrderEntity[]): void {
+  setOrders(orders: IOrderResponse[]): void {
     this._orders = orders;
   }
 

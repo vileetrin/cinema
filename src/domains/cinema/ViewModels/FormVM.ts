@@ -6,6 +6,7 @@ import IHallEntity from '../halls/store/IHallEntity.ts';
 import OrdersStore from '../../order/store/OrdersStore.ts';
 import IOrderEntity from '../../order/store/IOrderEntity.ts';
 import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
+import IOrderResponse from '../../order/store/IOrderResponse.ts';
 
 export class FormVM {
   private _hallsStore: HallsStore;
@@ -41,7 +42,7 @@ export class FormVM {
     return this._hallsStore.halls;
   }
 
-  get orders(): IOrderEntity[] {
+  get orders(): IOrderResponse[] {
     return this._ordersStore.orders;
   }
 

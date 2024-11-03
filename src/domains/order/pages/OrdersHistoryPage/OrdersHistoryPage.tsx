@@ -3,10 +3,10 @@ import { observer } from 'mobx-react-lite';
 import { useEffect, useMemo } from 'react';
 import { useStore } from '../../../../infrastructure/StoreContext.ts';
 import { OrdersVM } from '../../ViewModels/OrdersVM.ts';
-import Order from '../../components/Order/Order.tsx';
 import PreviousButton from '../../components/Buttons/PreviousButton';
 import NextButton from '../../components/Buttons/NextButton.tsx';
 import IOrderResponse from '../../store/IOrderResponse.ts';
+import Order from '../../components/Order/Order.tsx';
 
 const OrdersHistoryPage = observer(() => {
   const { ordersStore } = useStore();
@@ -14,7 +14,7 @@ const OrdersHistoryPage = observer(() => {
 
   useEffect(() => {
     vm.loadOrders(vm.currentPage);
-  }, [vm]);
+  }, []);
 
   return (
     <div className={css.container}>
@@ -23,7 +23,7 @@ const OrdersHistoryPage = observer(() => {
       </h1>
       <ul className={css.list}>
         {vm.orders.map((order: IOrderResponse) => (
-          <Order order={order} vm={vm} key={order.order.id} />
+          <Order orderId={order.order.id} vm={vm} key={order.order.id} />
         ))}
       </ul>
 

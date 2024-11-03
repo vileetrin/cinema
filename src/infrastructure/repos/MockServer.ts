@@ -123,7 +123,6 @@ class MockServer {
       const cinema: ICinemaEntity | undefined = this.cinemas.find(
         (cinema: ICinemaEntity): boolean => cinema.id === cinemaId
       );
-      console.log(cinema?.address);
       return cinema ? cinema.address : undefined;
     };
 
@@ -135,6 +134,32 @@ class MockServer {
       })
     );
     return { orders: detailedOrders, total: this.orders.length };
+  }
+
+  static async fetchOrder(orderId: number): Promise<IOrderResponse | undefined> {
+    const filmName = (filmId: number): string | undefined => {
+      const film: IFilmEntity | undefined = this.films.find((film: IFilmEntity): boolean => film.id === filmId);
+      return film ? film.name : undefined;
+    };
+
+    const cinemaAddress = (cinemaId: number): string | undefined => {
+      const cinema: ICinemaEntity | undefined = this.cinemas.find(
+        (cinema: ICinemaEntity): boolean => cinema.id === cinemaId
+      );
+      return cinema ? cinema.address : undefined;
+    };
+
+    const foundOrder: IOrderEntity | undefined = this.orders.find((order: IOrderEntity) => order.id === orderId);
+
+    if (!foundOrder) {
+      return undefined;
+    }
+
+    return {
+      order: foundOrder,
+      cinemaAddress: cinemaAddress(foundOrder.cinemaId),
+      filmName: filmName(foundOrder.filmId),
+    };
   }
 
   static async addOrder(order: IOrderEntity): Promise<void> {

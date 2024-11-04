@@ -4,17 +4,16 @@ import IOrderEntity from '../store/IOrderEntity.ts';
 import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 import IOrderResponse from '../store/IOrderResponse.ts';
 import { OrderVM } from './OrderVM.ts';
+import Pagination from '../../../pagination/Pagination.ts';
 
 export class OrdersVM {
   private _ordersStore: OrdersStore;
-  private orderVms = new Map<number, OrderVM>();
+  _pagination: Pagination = new Pagination(5);
 
   constructor(ordersStore: OrdersStore) {
     this._ordersStore = ordersStore;
     makeObservable(this, {
       orders: computed,
-      totalOrders: computed,
-      currentPage: computed,
       loadOrders: action,
       addOrder: action,
     });
@@ -24,49 +23,47 @@ export class OrdersVM {
     return this._ordersStore.orders;
   }
 
-  get totalOrders(): number {
-    return this._ordersStore.totalOrders;
-  }
-
-  get currentPage(): number {
-    return this._ordersStore.currentPage;
+  get pagination(): Pagination {
+    return this._pagination;
   }
 
   async loadOrders(page: number): Promise<void> {
-    const { orders, total } = await OrdersServerRepo.loadOrders(page, this._ordersStore._pageSize);
+    this._pagination.setCurrentPage(page);
+    const { orders, total } = await OrdersServerRepo.loadOrders(
+      this._pagination.currentPage,
+      this._pagination._pageSize
+    );
     this._ordersStore.setOrders(orders);
-    this._ordersStore.setTotalOrders(total);
-    this._ordersStore.setCurrentPage(page);
+    this._pagination.setTotalItems(total);
+    this._pagination.setCurrentPage(page);
   }
 
   async addOrder(order: IOrderEntity): Promise<void> {
     await OrdersServerRepo.addOrder(order);
-    await this.loadOrders(this._ordersStore.currentPage);
+    await this.loadOrders(this._pagination.currentPage);
   }
 
-  isLastPage() {
-    return !(this.currentPage * this._ordersStore._pageSize < this.totalOrders);
-  }
-
-  isFirstPage() {
-    return this.currentPage === 1;
-  }
-
-  reloadOrders() {
-    this.loadOrders(this._ordersStore.currentPage);
+  async removeOrdersById(orderId: number): Promise<void> {
+    await OrdersServerRepo.deleteOrder(orderId);
+    const orders: IOrderResponse[] = this._ordersStore._orders.filter(
+      (order: IOrderResponse): boolean => order.order.id !== orderId
+    );
+    this._ordersStore.setOrders(orders);
+    this.loadOrders(this._pagination.currentPage);
   }
 
   getOrderVm(orderId: number): OrderVM | undefined {
-    OrdersServerRepo.loadOrder(orderId).then(orderData => {
-      if (orderData) {
-        // console.log(orderData);
-        this.orderVms.set(orderId, new OrderVM(orderData));
-        // console.log(this.orderVms.get(orderId));
-      }
-    });
-    console.log(this.orderVms.get(orderId));
-    // console.log(this.orderVms, this.orderVms.get(orderId));
+    const order: IOrderResponse | undefined = this._ordersStore._orders.find(
+      (order: IOrderResponse): boolean => order.order.id === orderId
+    );
+    if (!order) {
+      return undefined;
+    }
 
-    return this.orderVms.get(orderId);
+    return new OrderVM(order, {
+      onDelete: (id: number): void => {
+        this.removeOrdersById(id);
+      },
+    });
   }
 }

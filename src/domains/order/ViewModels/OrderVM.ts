@@ -1,12 +1,17 @@
 import { action, computed, makeObservable } from 'mobx';
-import OrdersServerRepo from '../../../infrastructure/repos/OrdersServerRepo.ts';
 import IOrderResponse from '../store/IOrderResponse.ts';
+
+type OrderVMTransport = {
+  onDelete: (id: number) => void;
+};
 
 export class OrderVM {
   private _order: IOrderResponse;
+  private _transport: OrderVMTransport;
 
-  constructor(order: IOrderResponse) {
+  constructor(order: IOrderResponse, transport: OrderVMTransport) {
     this._order = order;
+    this._transport = transport;
     makeObservable(this, {
       date: computed,
       hallNumber: computed,
@@ -38,8 +43,7 @@ export class OrderVM {
   }
 
   async deleteOrder(): Promise<void> {
-    const orderId = this._order.order.id;
-    await OrdersServerRepo.deleteOrder(orderId);
-    console.log(orderId);
+    // const orderId: number = this._order.order.id;
+    this._transport.onDelete(this._order.order.id);
   }
 }

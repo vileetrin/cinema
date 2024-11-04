@@ -4,6 +4,7 @@ import IFilmEntity from '../../domains/films/store/IFilmEntity.ts';
 import ICinemaEntity from '../../domains/cinema/store/ICinemaEntity.ts';
 import IFilmResponse from '../../domains/films/store/IFilmResponse.ts';
 import IOrderResponse from '../../domains/order/store/IOrderResponse.ts';
+import IFilmsResponse from '../../domains/films/store/IFilmsResponse.ts';
 
 class MockServer {
   private static orders: IOrderEntity[] = [
@@ -136,32 +137,6 @@ class MockServer {
     return { orders: detailedOrders, total: this.orders.length };
   }
 
-  static async fetchOrder(orderId: number): Promise<IOrderResponse | undefined> {
-    const filmName = (filmId: number): string | undefined => {
-      const film: IFilmEntity | undefined = this.films.find((film: IFilmEntity): boolean => film.id === filmId);
-      return film ? film.name : undefined;
-    };
-
-    const cinemaAddress = (cinemaId: number): string | undefined => {
-      const cinema: ICinemaEntity | undefined = this.cinemas.find(
-        (cinema: ICinemaEntity): boolean => cinema.id === cinemaId
-      );
-      return cinema ? cinema.address : undefined;
-    };
-
-    const foundOrder: IOrderEntity | undefined = this.orders.find((order: IOrderEntity) => order.id === orderId);
-
-    if (!foundOrder) {
-      return undefined;
-    }
-
-    return {
-      order: foundOrder,
-      cinemaAddress: cinemaAddress(foundOrder.cinemaId),
-      filmName: filmName(foundOrder.filmId),
-    };
-  }
-
   static async addOrder(order: IOrderEntity): Promise<void> {
     this.orders.unshift(order);
   }
@@ -176,17 +151,32 @@ class MockServer {
     );
   }
 
-  static async fetchFilms(): Promise<Array<IFilmResponse>> {
+  static async fetchFilms(page: number, pageSize: number): Promise<IFilmsResponse> {
+    const startIndex: number = (page - 1) * pageSize;
+
+    const paginatedFilms: IFilmEntity[] = this.films.slice(startIndex, startIndex + pageSize);
+
     const watchedFilmsIds: number[] = await this.fetchWatchedFilmIds();
-    return this.films.map((film: IFilmEntity) => ({
+
+    const films: IFilmResponse[] = paginatedFilms.map((film: IFilmEntity) => ({
       film,
       isWatched: watchedFilmsIds.includes(film.id),
     }));
+
+    return {
+      films: films,
+      total: this.films.length,
+    };
   }
 
-  static async fetchFilm(filmId: number): Promise<IFilmResponse> {
+  static async fetchFilm(filmId: number): Promise<IFilmResponse | undefined> {
     const watchedFilmsIds: number[] = await this.fetchWatchedFilmIds();
     const foundFilm: IFilmEntity | undefined = this.films.find((film: IFilmEntity): boolean => film.id === filmId);
+
+    if (!foundFilm) {
+      return undefined;
+    }
+
     return {
       film: foundFilm,
       isWatched: watchedFilmsIds.includes(filmId),

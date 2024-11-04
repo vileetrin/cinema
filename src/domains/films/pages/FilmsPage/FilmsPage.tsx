@@ -8,6 +8,9 @@ import { useStore } from '../../../../infrastructure/StoreContext.ts';
 import { FilmsPageVM } from '../../ViewModels/FilmsPageVM.ts';
 import IFilmEntity from '../../store/IFilmEntity.ts';
 import Film from '../../components/Film/Film.tsx';
+import PreviousButton from '../../../order/components/Buttons/PreviousButton.tsx';
+import NextButton from '../../../order/components/Buttons/NextButton.tsx';
+import Pagination from '../../../../pagination/Pagination.ts';
 
 const FilmsPage = observer(() => {
   const { filmsStore } = useStore();
@@ -16,8 +19,10 @@ const FilmsPage = observer(() => {
   }, []);
 
   useEffect((): void => {
-    vm.init();
+    vm.init(pagination.currentPage);
   }, [vm]);
+
+  const pagination: Pagination = vm.pagination;
 
   return (
     <div className={css.container}>
@@ -34,6 +39,11 @@ const FilmsPage = observer(() => {
           );
         })}
       </ul>
+      <div className={css.btnContainer}>
+        <PreviousButton onClick={() => vm.init(pagination.currentPage - 1)} disabled={pagination.isFirstPage()} />
+        <p>{pagination.currentPage}</p>
+        <NextButton onClick={() => vm.init(pagination.currentPage + 1)} disabled={pagination.isLastPage()} />
+      </div>
     </div>
   );
 });

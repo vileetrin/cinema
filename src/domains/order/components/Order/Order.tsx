@@ -2,19 +2,13 @@ import css from './Order.module.css';
 import { observer } from 'mobx-react-lite';
 import { OrdersVM } from '../../ViewModels/OrdersVM.ts';
 import { useMemo } from 'react';
+import { OrderVM } from '../../ViewModels/OrderVM.ts';
 
 const Order = observer(({ orderId, vm }: { orderId: number; vm: OrdersVM }) => {
-  const orderVm = useMemo(() => vm.getOrderVm(orderId), []);
+  const orderVm: OrderVM | undefined = useMemo((): OrderVM | undefined => vm.getOrderVm(orderId), []);
   if (!orderVm) {
     return undefined;
   }
-
-  const handleClick = () => {
-    orderVm.deleteOrder();
-    vm.reloadOrders();
-  };
-
-  console.log(orderId);
 
   return (
     <li className={css.item}>
@@ -40,7 +34,7 @@ const Order = observer(({ orderId, vm }: { orderId: number; vm: OrdersVM }) => {
           <p>{orderVm.seats}</p>
         </div>
       </div>
-      <button type="button" onClick={() => handleClick()} className={css.btn}>
+      <button type="button" onClick={() => orderVm?.deleteOrder()} className={css.btn}>
         Delete
       </button>
     </li>

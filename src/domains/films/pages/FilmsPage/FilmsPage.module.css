@@ -16,10 +16,18 @@
     justify-content: center;
 }
 
-.title{
+.title {
     margin-bottom: 20px;
 }
 
-.part{
+.part {
     color: #ef3b3b;
+}
+
+.btnContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
 }

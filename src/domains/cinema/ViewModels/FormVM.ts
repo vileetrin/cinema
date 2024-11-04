@@ -11,6 +11,7 @@ import IOrderResponse from '../../order/store/IOrderResponse.ts';
 export class FormVM {
   private _hallsStore: HallsStore;
   private _ordersStore: OrdersStore;
+  private _step: number = 1;
   public formData: { cinema: number; hall: number; seats: number[] } = {
     cinema: 0,
     hall: 0,
@@ -29,6 +30,8 @@ export class FormVM {
       toggleSeat: action,
       chosenSeats: observable,
       clearSelectedSeats: action,
+      nextStep: action,
+      previousStep: action,
     });
   }
 
@@ -80,5 +83,17 @@ export class FormVM {
 
   setFormData(values: object): void {
     this.formData = { ...this.formData, ...values };
+  }
+
+  nextStep(): void {
+    this._step += 1;
+  }
+
+  previousStep(): void {
+    this._step -= 1;
+  }
+
+  get step(): number {
+    return this._step;
   }
 }
